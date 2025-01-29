@@ -6,7 +6,7 @@
 #include "hardware/watchdog.h"
 #include "hardware/uart.h"
 
-
+int test;
 
 
 #include "canbus.hpp"
