@@ -6,6 +6,7 @@
 #include "hardware/watchdog.h"
 #include "hardware/uart.h"
 
+int ruben;
 
 
 #include "canbus.hpp"
