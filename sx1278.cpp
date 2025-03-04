@@ -46,36 +46,49 @@ uint8_t sx1278::readReg(uint8_t reg)
 
 void sx1278::sendPacket(TransmissionPacket packet)
 {
-    uint32_t bufferSize = sizeof(TransmissionPacket) + packet.length_of_payload;
+    constexpr uint8_t headerSize = 1 + sizeof(packet.timestamp) + 1; // = 6 bytes
+    uint32_t bufferSize = headerSize + packet.length_of_payload;
     uint8_t sendingBuffer[bufferSize];
 
     sendingBuffer[0] = packet.length_of_payload;
-    sendingBuffer[1] = packet.timestamp;
-    sendingBuffer[3] = packet.ID;
-    memcpy(&sendingBuffer[4], packet.payload, packet.length_of_payload);
+    memcpy(&sendingBuffer[1], &packet.timestamp, sizeof(packet.timestamp));
+    sendingBuffer[1 + sizeof(packet.timestamp)] = packet.ID;
+
+    memcpy(&sendingBuffer[headerSize], packet.payload, packet.length_of_payload);
 
     writeReg(RegOpMode, 0x8B);
-
-    uint8_t FifoBuffer =  RegFifo | 0x80;      //Setter første bit til 1 for skriving
+    uint8_t fifoWriteCmd = RegFifo | 0x80; // set MSB for write
     gpio_put(Pin_CS, 0);
-    spi_write_blocking(spi_port, &FifoBuffer, 1);
+    spi_write_blocking(spi_port, &fifoWriteCmd, 1);
     spi_write_blocking(spi_port, sendingBuffer, bufferSize);
     gpio_put(Pin_CS, 1);
-
     writeReg(RegOpMode, 0x89);
 }
 
-TransmissionPacket sx1278::receivePacket(void)
-{
-    uint8_t length = readReg(RegRxNbBytes);                     //les hvor mange payload bytes er i kommet i fifo
-    TransmissionPacket data(length);                            //konstruer pakke
+TransmissionPacket sx1278::receivePacket(void) {
+    uint8_t totalLength = readReg(RegRxNbBytes);
 
-    uint8_t fifoRxCurrentAddr = readReg(RegFifoRxCurrentAddr);  //finn pakke adresse i fifo
-    writeReg(RegFifoAddrPtr, fifoRxCurrentAddr);                //set pakke adresse i fifo for iterasjon
-
+    // Read the entire FIFO content into a temporary buffer.
+    uint8_t buffer[totalLength];
+    uint8_t fifoRxCurrentAddr = readReg(RegFifoRxCurrentAddr);
+    writeReg(RegFifoAddrPtr, fifoRxCurrentAddr);
     gpio_put(Pin_CS, 0);
-    spi_write_blocking(spi_port, &RegFifo, 1);                  //les fifo in til mikrokontroller
-    spi_read_blocking(spi_port, 0, data.payload, length);
+    spi_write_blocking(spi_port, &RegFifo, 1);
+    spi_read_blocking(spi_port, 0, buffer, totalLength);
     gpio_put(Pin_CS, 1);
-    return data;
+
+    // Parse header:
+    uint8_t payloadLength = buffer[0];
+    int32_t timestamp;
+    memcpy(&timestamp, &buffer[1], sizeof(timestamp));
+    uint8_t ID = buffer[1 + sizeof(timestamp)];
+
+    // Create a packet with the payload length.
+    TransmissionPacket packet(payloadLength);
+    packet.timestamp = timestamp;
+    packet.ID = ID;
+    memcpy(packet.payload, &buffer[1 + sizeof(timestamp) + 1], payloadLength);
+
+    return packet;
 }
+

@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Phoenix_Telemetry_2025 Phoenix_Telemetry_2025.cpp canbus.cpp sx1278.cpp)
+add_executable(Phoenix_Telemetry_2025 Phoenix_Telemetry_2025.cpp mcp25625.cpp sx1278.cpp)
 
 pico_set_program_name(Phoenix_Telemetry_2025 "Phoenix_Telemetry_2025")
 pico_set_program_version(Phoenix_Telemetry_2025 "0.1")
