@@ -16,7 +16,7 @@
     #define DEBUG_PRINT(fmt, ...) ((void)0);
 #endif
 
-static constexpr bool isMaster = false;      //designator for om koden fungerer som ledsager i kommunikasjonen
+static constexpr bool isMaster = true;      //designator for om koden fungerer som ledsager i kommunikasjonen
 
 
 static constexpr uint8_t Pin_Radio_CS   = 17;
@@ -69,6 +69,7 @@ void masterLoop()
         testpacket1.payload[0] = 42;
         Radio.sendPacket(testpacket1);
         sleep_ms(500);
+        watchdog_update();
     }
     
 }
@@ -85,6 +86,7 @@ void slaveLoop()
         TransmissionPacket testpacket2 = Radio.receivePacket();
         printf("Incoming packet, payload: %d\n", testpacket2.payload[0]);
         sleep_ms(500);
+        watchdog_update();
     }
     
 }
