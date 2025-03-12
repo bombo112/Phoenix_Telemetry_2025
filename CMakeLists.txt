@@ -35,7 +35,12 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Phoenix_Telemetry_2025 Phoenix_Telemetry_2025.cpp mcp25625.cpp sx1278.cpp)
+add_executable( Phoenix_Telemetry_2025
+                Phoenix_Telemetry_2025.cpp
+                mcp25625.cpp
+                sx1278.cpp
+                LoRa-RP2040.cpp
+                Print.cpp)
 
 pico_set_program_name(Phoenix_Telemetry_2025 "Phoenix_Telemetry_2025")
 pico_set_program_version(Phoenix_Telemetry_2025 "0.1")
@@ -54,12 +59,13 @@ target_include_directories(Phoenix_Telemetry_2025 PRIVATE
 )
 
 # Add any user requested libraries
-target_link_libraries(Phoenix_Telemetry_2025 
+target_link_libraries(Phoenix_Telemetry_2025
+        pico_stdlib
         hardware_spi
         hardware_dma
         hardware_timer
         hardware_watchdog
-        )
+)
 
 pico_add_extra_outputs(Phoenix_Telemetry_2025)
 
