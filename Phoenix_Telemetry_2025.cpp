@@ -189,7 +189,6 @@ int main(){
       printf("Sending %s\n", message);
       lastSendTime = to_ms_since_boot(get_absolute_time());            // timestamp the message
       interval = (rand()%2000) + 1000;    // 2-3 seconds
-      
     }
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
