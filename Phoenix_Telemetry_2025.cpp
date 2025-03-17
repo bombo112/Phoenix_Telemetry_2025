@@ -110,22 +110,22 @@ string outgoing;              // outgoing message
 
 uint8_t msgCount = 0;            // count of outgoing messages
 
-uint8_t localAddress = 0xFF;     // address of this device
-uint8_t destination = 0xBB;      // destination to send to
+uint8_t localAddress = 0xBB;     // address of this device
+uint8_t destination = 0xAA;      // destination to send to
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
 void sendMessage(string outgoing) {
   int n = outgoing.length();
-  char send[n+1];
+  char send[n];
   strcpy(send,outgoing.c_str());
   printf("Sending: %s\n",send);
   LoRa.beginPacket();                   // start packet
   LoRa.write(destination);              // add destination address
   LoRa.write(localAddress);             // add sender address
   LoRa.write(msgCount);                 // add message ID
-  LoRa.write(sizeof(send)+1);        // add payload length
+  LoRa.write(sizeof(send));        // add payload length
   LoRa.print(send);                 // add payload
   LoRa.endPacket();                     // finish packet and send it
   msgCount++;                           // increment message ID
@@ -139,14 +139,14 @@ void onReceive(int packetSize) {
   uint8_t incomingMsgId = LoRa.read();     // incoming msg ID
   uint8_t incomingLength = LoRa.read();    // incoming msg length
 
-  string incoming = "";
+  char incoming[incomingLength];
 
-  while (LoRa.available()) {
-    incoming += (char)LoRa.read();
+  for(int i=0; i< incomingLength; i++) {
+    incoming[i] = LoRa.read();
   }
 
   if (incomingLength != sizeof(incoming)) {   // check length for error
-    printf("error: message length does not match length\n");
+    printf("error: message length does not match length\n med en lengde på %d\n",sizeof(incoming));
     return;                             // skip rest of function
   }
 
