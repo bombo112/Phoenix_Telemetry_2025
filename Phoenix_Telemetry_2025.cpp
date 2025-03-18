@@ -184,7 +184,7 @@ int main(){
   
   while (1) {
       if (to_ms_since_boot(get_absolute_time()) - lastSendTime > interval) {
-      char message[] = "HeLoRa World! Slave";   // send a message
+      char message[] = "HeLoRa World! Jens";   // send a message
       sendMessage(message);
       printf("Sending %s\n", message);
       lastSendTime = to_ms_since_boot(get_absolute_time());            // timestamp the message
