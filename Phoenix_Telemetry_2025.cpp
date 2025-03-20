@@ -4,11 +4,8 @@
 #include "hardware/timer.h"
 #include "hardware/watchdog.h"
 #include "hardware/uart.h"
-
-#include "mcp25625.hpp"
-#include "sx1278.hpp"
-
 #include "LoRa-RP2040.h"
+#include "mcp2515.h"
 
 #define DEBUG
 
@@ -19,105 +16,39 @@
 #endif
 
 
+static constexpr uint8_t Pin_Radio_CS     = 17;
+static constexpr uint8_t Pin_Radio_SCK    = 18;
+static constexpr uint8_t Pin_Radio_MISO   = 16;
+static constexpr uint8_t Pin_Radio_MOSI   = 19;
+static constexpr uint8_t Pin_Radio_DIO0   = 20;
+static constexpr uint8_t Pin_Radio_DIO1   = 21;
+static constexpr uint8_t Pin_Radio_DIO2   = 22;
+static constexpr uint8_t Pin_Radio_DIO3   = 26;
+static constexpr uint8_t Pin_Radio_DIO4   = 27;
+static constexpr uint8_t Pin_Radio_RESET  = 28;
+
+static constexpr uint8_t Pin_Can_Cs       = 13;
+static constexpr uint8_t Pin_Can_MOSI     = 15;
+static constexpr uint8_t Pin_Can_MISO     = 12;
+static constexpr uint8_t Pin_Can_SCK      = 14;
+static constexpr uint8_t Pin_Can_RESET    = 10;
+
+MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000); //CAN Bus interface
 
 
 
-static constexpr bool isMaster = false;      //designator for om koden fungerer som ledsager i kommunikasjonen
-
-
-static constexpr uint8_t Pin_Radio_CS    = 17;
-static constexpr uint8_t Pin_Radio_SCK   = 18;
-static constexpr uint8_t Pin_Radio_MISO  = 16;
-static constexpr uint8_t Pin_Radio_MOSI  = 19;
-static constexpr uint8_t Pin_Radio_DIO0  = 20;
-static constexpr uint8_t Pin_Radio_DIO1  = 21;
-static constexpr uint8_t Pin_Radio_DIO2  = 22;
-static constexpr uint8_t Pin_Radio_DIO3  = 26;
-static constexpr uint8_t Pin_Radio_DIO4  = 27;
-static constexpr uint8_t Pin_Radio_RESET = 28;
-
-void masterLoop();
-void slaveLoop();
-
-/*
-
-int main()
-{
-
-    if (watchdog_caused_reboot())
-    {
-        printf("WARNING: WATCHDOG FORCED REBOOT!");
-        //logge til blackbox?
-    }
-
-
-    //init alle system funksjoner herfra
-    stdio_init_all();
-
-    watchdog_enable(2000, false);
-
-
-    //system entry
-    if (isMaster)   {masterLoop();}
-    else            {slaveLoop(); }
-}
-
-/*=================================================================================*/
-/*=============================== MASTER LOOP =====================================*/
-/*=================================================================================*/
-void masterLoop()
-{
-    DEBUG_PRINT("Entering Master loop");
-
-    while (true)
-    {
-        TransmissionPacket testpacket1(sizeof(int32_t));
-        testpacket1.ID = 1;
-        testpacket1.timestamp = 2024;
-        testpacket1.payload[0] = 42;
-        sleep_ms(500);
-    }
-    
-}
-
-/*================================================================================*/
-/*=============================== SLAVE LOOP =====================================*/
-/*================================================================================*/
-void slaveLoop()
-{
-    DEBUG_PRINT("Entering Slave loop");
-
-    while (true)
-    {
-        TransmissionPacket testpacket2 = TransmissionPacket(1);
-        printf("Incoming packet, payload: %d\n", testpacket2.payload[0]);
-        sleep_ms(500);
-    }
-    
-}
-
-
-
-
-
-using std::string;
-
-const int csPin = Pin_Radio_CS;          // LoRa radio chip select
-const int resetPin = Pin_Radio_RESET;       // LoRa radio reset
-const int irqPin = Pin_Radio_DIO0;         // change for your board; must be a hardware interrupt pin
-
-string outgoing;              // outgoing message
+std::string outgoing;              // outgoing message
 
 uint8_t msgCount = 0;            // count of outgoing messages
 
-uint8_t localAddress = 0xBB;     // address of this device
-uint8_t destination = 0xAA;      // destination to send to
+uint8_t localAddress = 0xAA;     // address of this device
+uint8_t destination = 0xBB;      // destination to send to
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
-void sendMessage(string outgoing) {
-  int n = outgoing.length();
+void sendMessage(std::string outgoing) {
+  int32_t n = outgoing.length();
   char send[n];
   strcpy(send,outgoing.c_str());
   printf("Sending: %s\n",send);
@@ -134,7 +65,7 @@ void sendMessage(string outgoing) {
 void onReceive(int packetSize) {
   if (packetSize == 0) return;          // if there's no packet, return
   // read packet header uint8_ts:
-  int recipient = LoRa.read();          // recipient address
+  int32_t recipient = LoRa.read();          // recipient address
   uint8_t sender = LoRa.read();            // sender address
   uint8_t incomingMsgId = LoRa.read();     // incoming msg ID
   uint8_t incomingLength = LoRa.read();    // incoming msg length
@@ -166,25 +97,31 @@ void onReceive(int packetSize) {
   printf("Snr: %d\n", LoRa.packetSnr());
 }
 
+
+void initLoRa()
+{
+  LoRa.setPins(Pin_Radio_CS, Pin_Radio_RESET, Pin_Radio_DIO0);// set CS, reset, IRQ pin
+
+  if (!LoRa.begin(433E6)) // initialize ratio at 915 MHz
+  {             
+    printf("LoRa init failed. Check your connections.\n");
+    while (true);         // if failed, do nothing
+  }
+  else
+  {
+    printf("LoRa init succeeded.\n");
+  }
+}
+
 int main(){
 
   stdio_init_all();
-
-  printf("\nLoRa Duplex\n");
-
-  // override the default CS, reset, and IRQ pins (optional)
-  LoRa.setPins(csPin, resetPin, irqPin);// set CS, reset, IRQ pin
-
-  if (!LoRa.begin(433E6)) {             // initialize ratio at 915 MHz
-    printf("LoRa init failed. Check your connections.\n");
-    while (true);                       // if failed, do nothing
-  }
-
-  printf("LoRa init succeeded.\n");
+  initLoRa();
+  
   
   while (1) {
       if (to_ms_since_boot(get_absolute_time()) - lastSendTime > interval) {
-      char message[] = "HeLoRa World! Jens";   // send a message
+      char message[] = "HeLoRa World! Bakke Node";   // send a message
       sendMessage(message);
       printf("Sending %s\n", message);
       lastSendTime = to_ms_since_boot(get_absolute_time());            // timestamp the message

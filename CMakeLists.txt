@@ -37,10 +37,9 @@ pico_sdk_init()
 
 add_executable( Phoenix_Telemetry_2025
                 Phoenix_Telemetry_2025.cpp
-                mcp25625.cpp
-                sx1278.cpp
                 LoRa-RP2040.cpp
-                Print.cpp)
+                Print.cpp
+                mcp2515.cpp)
 
 pico_set_program_name(Phoenix_Telemetry_2025 "Phoenix_Telemetry_2025")
 pico_set_program_version(Phoenix_Telemetry_2025 "0.1")

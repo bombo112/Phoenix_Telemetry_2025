@@ -1,8 +1,6 @@
 #ifndef LORA_H
 #define LORA_H
 
-// // #include <Arduino.h>
-// #include <SPI.h>
 
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
