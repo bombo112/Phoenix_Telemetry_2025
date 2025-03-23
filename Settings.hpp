@@ -26,6 +26,4 @@ static constexpr uint8_t Pin_Can_RESET    = 10;
 static constexpr uint64_t RadioFrekvens   = 433E6;
 static constexpr bool NodeIsRocket = 0; // 1=Rakett, 0=bakkestasjon
 
-static constexpr
-
 #endif
