@@ -1,14 +1,13 @@
 
 
 class send {
-    public:
+    private:
         uint8_t type;
         uint8_t lengde;
         uint8_t *data;
-    
+    public:
         // Constructor: allocates memory for 'data' and copies the input array
         send(uint8_t TYPE, uint8_t LENGDE, uint8_t *DATA)
-            : type(TYPE), lengde(LENGDE)
         {
             // Allocate memory for data
             data = new uint8_t[lengde];
@@ -21,5 +20,3 @@ class send {
             delete[] data;
         }
     };
-arrayet[20] = {1, 2, 3, 4, ...};
-send Datapakke(1, 20, arrayet)
