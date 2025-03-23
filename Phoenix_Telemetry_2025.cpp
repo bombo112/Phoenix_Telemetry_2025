@@ -10,7 +10,7 @@
 #include "mcp2515.h"
 #include "node_bakke.hpp"
 #include "node_rakett.hpp"
-#include "Send.h"
+#include "message.h"
 #include "datamanagement.hpp"
 
 
@@ -59,8 +59,5 @@ int main()
   //unreachable
   */
 
-  while (1) {
-    
-  }
   return 0;
 }
