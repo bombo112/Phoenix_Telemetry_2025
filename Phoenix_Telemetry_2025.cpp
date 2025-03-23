@@ -59,8 +59,11 @@ void onReceive(int packetSize){
   }
 
   printf("Message length: %d\n", mota.lengde);
-  printf("Message: %s\n", mota.data);
-  printf("RSSI: %d\n", LoRa.packetRssi());
+  printf("Message: ");
+  for(int i=0; i< mota.lengde; i++){
+    printf("%d", mota.data[i]);
+  }
+  printf("\nRSSI: %d\n", LoRa.packetRssi());
   printf("Snr: %d\n", LoRa.packetSnr());
 }
 
@@ -95,7 +98,7 @@ int main()
   */
 
   while (1) {
-    sendMessage(melding);
+    //sendMessage(melding);
     onReceive(LoRa.parsePacket());
     sleep_ms(100);
   }
