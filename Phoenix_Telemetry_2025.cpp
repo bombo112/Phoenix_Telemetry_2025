@@ -38,35 +38,6 @@ static constexpr bool NodeIsRocket = 0; // 1=Rakett, 0=bakkestasjon
 
 MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000); //CAN Bus interface
 
-void sendMessage(send send){
-  LoRa.beginPacket();             
-  LoRa.write(send.type);           
-  LoRa.write(send.lengde);      
-  LoRa.write(send.data, send.lengde);               
-  LoRa.endPacket();              
-}
-
-void onReceive(int packetSize){
-  if (packetSize == 0) return;
-  send mota;
-  mota.type = LoRa.read(); 
-  mota.lengde = LoRa.read(); 
-
-  mota.data[mota.lengde];
-
-  for(int i=0; i< mota.lengde; i++) {
-    mota.data[i] = LoRa.read();
-  }
-
-  printf("Message length: %d\n", mota.lengde);
-  printf("Message: ");
-  for(int i=0; i< mota.lengde; i++){
-    printf("%d", mota.data[i]);
-  }
-  printf("\nRSSI: %d\n", LoRa.packetRssi());
-  printf("Snr: %d\n", LoRa.packetSnr());
-}
-
 
 void initLoRa()
 {
@@ -80,16 +51,6 @@ int main()
 {
   stdio_init_all();
   initLoRa();
-
-  send melding;
-  melding.type = 1;
-  melding.lengde = 16;
-  melding.data[melding.lengde];
-  for(int i=0; i<melding.lengde; i++){
-    melding.data[i] = i;
-  }
-
-  
   
   /*
   if (NodeIsRocket == true) {RocketLoop(can);}
@@ -98,9 +59,7 @@ int main()
   */
 
   while (1) {
-    //sendMessage(melding);
-    onReceive(LoRa.parsePacket());
-    sleep_ms(100);
+    
   }
   return 0;
 }
