@@ -1,13 +1,12 @@
+
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "mcp2515.h"
 #include "hardware/dma.h"
 #include "hardware/timer.h"
 #include "hardware/watchdog.h"
 #include "hardware/uart.h"
 #include "LoRa-RP2040.h"
-#include "mcp2515.h"
-#include "node_bakke.hpp"
-#include "node_rakett.hpp"
 
 
 //Radio pinner
@@ -31,9 +30,9 @@ static constexpr uint8_t Pin_Can_RESET    = 10;
 
 
 static constexpr uint64_t RadioFrekvens   = 433E6;
+static constexpr bool NodeIsRocket = 0; // 1=Rakett, 0=bakkestasjon
 
 MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000); //CAN Bus interface
-
 
 
 std::string outgoing;             // outgoing message
@@ -109,9 +108,14 @@ int main()
   stdio_init_all();
   initLoRa();
   
+
+  if (NodeIsRocket == true) {RocketLoop(can);}
+  else                      {GroundLoop();}
+  //unreachable
+
   while (1) {
       if (to_ms_since_boot(get_absolute_time()) - lastSendTime > interval) {
-      char message[] = "HeLoRa World! Bakke Node";   // send a message
+      char message[] = "HeLoRa World! Rakett node";   // send a message
       sendMessage(message);
       printf("Sending %s\n", message);
       lastSendTime = to_ms_since_boot(get_absolute_time());            // timestamp the message
