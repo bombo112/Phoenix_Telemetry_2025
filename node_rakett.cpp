@@ -1,4 +1,6 @@
 #include "node_rakett.hpp"
+#include "LoRa-RP2040.h"
+#include "message.h"
 
 int RocketLoop()
 {
@@ -20,11 +22,15 @@ int RocketLoop()
         if (canbus.readMessage(&rx) == MCP2515::ERROR_OK)   {
             printf("Received message from ID: 0x%03X\n", rx.can_id);
 
+            uint8_t data[4+8];
+            memcpy(data, &rx.can_id, sizeof(rx.can_id));
+            memcpy(data+4, &rx.data, sizeof(rx.data));
+            message melding(1, sizeof(data), data);
+
+            melding.send();
+
             canRxfifo.push(rx);
         }
-
-
-
     }
 }
 
