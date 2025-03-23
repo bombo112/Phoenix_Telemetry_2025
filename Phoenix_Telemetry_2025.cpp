@@ -88,10 +88,11 @@ int main()
 
   
   
-
+  /*
   if (NodeIsRocket == true) {RocketLoop(can);}
   else                      {GroundLoop();}
   //unreachable
+  */
 
   while (1) {
     sendMessage(melding);
