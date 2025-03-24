@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <cstddef>
 
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
@@ -25,5 +26,11 @@ static constexpr uint8_t Pin_Can_RESET    = 10;
 
 static constexpr uint64_t RadioFrekvens   = 433E6;
 static constexpr bool NodeIsRocket = 0; // 1=Rakett, 0=bakkestasjon
+
+constexpr uint32_t idsToSendToGround[] = {200, 201, 202, 203, 300, 301, 302, 303};
+
+constexpr size_t MaxBufferSize = 2000;
+
+
 
 #endif
