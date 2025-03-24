@@ -1,3 +1,8 @@
+#include "mcp2515.h"
+
+static uint8_t CanIdLength = 4;
+static uint8_t CanDataLength = 8;
+static uint8_t MaxMessageLength = 252;
 
 
 class message {
@@ -9,16 +14,20 @@ class message {
         float snr;
     public:
         // Constructor: allocates memory for 'data' and copies the input array
-        message(uint8_t TYPE, uint8_t LENGTH, uint8_t *DATA) : type(TYPE), length(LENGTH)
-        {
+        message(uint8_t TYPE, uint8_t LENGTH, uint8_t *DATA) : type(TYPE), length(LENGTH){
             // Allocate memory for data
             data = new uint8_t[length];
             // Copy the array content from DATA to data
             memcpy(data, DATA, length);
         }
 
-        message()
-        {
+        message(){
+            // Allocate memory for data
+            data = new uint8_t[256];
+        }
+
+        message(uint8_t TYPE) : type(TYPE){
+            length = 0;
             // Allocate memory for data
             data = new uint8_t[256];
         }
@@ -33,7 +42,8 @@ class message {
             LoRa.write(type);           
             LoRa.write(length);      
             LoRa.write(data, length);               
-            LoRa.endPacket();              
+            LoRa.endPacket(); 
+            length = 0;             
         }
         
         void receive(void){
@@ -60,25 +70,18 @@ class message {
             printf("RSSI: %d\n", rssi);
             printf("SNR: %d\n", snr);
         }
-    };
 
-    /*
-    uint8_t lengde = 32;
-    uint8_t data[lengde];
-    for(int i=0; i<lengde; i++){
-      data[i] = i;
-    }
-    
-    message melding(1, sizeof(data), data);
-    message mota;
-  
-    while (1) {
-      melding.send();
-      if(LoRa.parsePacket() != 0){
-        mota.receive();
-        mota.print();
-      }
-      sleep_ms(100);
-    }
-    */
-   
+
+        bool can2message(can_frame can){
+            memcpy(data+length, &can.can_id, sizeof(can.can_id));
+            memcpy(data+length+CanIdLength, &can.data, sizeof(can.data));
+            length += CanIdLength + CanDataLength;
+            if(length>MaxMessageLength - CanIdLength - CanDataLength){
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
+
+    };
