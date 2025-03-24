@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <cstddef>
+#include "pico/unique_id.h"
 
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
@@ -25,11 +26,13 @@ static constexpr uint8_t Pin_Can_RESET    = 10;
 
 
 static constexpr uint64_t RadioFrekvens   = 433E6;
-static constexpr bool NodeIsRocket = 0; // 1=Rakett, 0=bakkestasjon
 
 constexpr uint32_t idsToSendToGround[] = {200, 201, 202, 203, 300, 301, 302, 303};
 
 constexpr size_t MaxBufferSize = 2000;
+
+static constexpr pico_unique_board_id_t RocketNodeId = {.id {0x06,0xd7,0xea,0x02,0xbe,0xcb,0x5b,0x99}}; //06d7ea02becb5b99
+static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xc5,0xa8,0xe8,0x64,0xe9,0x5c,0xa6,0x46}}; //c5a8e864e95ca646
 
 
 
