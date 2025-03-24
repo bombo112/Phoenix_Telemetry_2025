@@ -10,7 +10,7 @@
 #include "node_bakke.hpp"
 #include "node_rakett.hpp"
 #include "message.h"
-
+#include "pico/unique_id.h"
 
 
 void initLoRa()
@@ -25,11 +25,44 @@ int main()
 {
   stdio_init_all();
   initLoRa();
+
+  pico_unique_board_id_t currentBoard;
+  pico_get_unique_board_id(&currentBoard);
   
   int error = 0;
-  if (NodeIsRocket == true) {error = RocketLoop();}
-  else                      {error = GroundLoop();}
+  if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = RocketLoop();}
+  if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = GroundLoop();}
 
-  while (true){printf("ERRORCODE: %D", error);}
+
+
+  //=======ERROR=HANDDELING=======//
+
+
+  while (true)
+  {
+    switch (error)
+    {
+    case 0:
+      printf("Current board ID does not match any of the known nodes, current ID: ");
+      for (int i = 0; i < PICO_UNIQUE_BOARD_ID_SIZE_BYTES; i++)
+      {
+        printf("%02x", currentBoard.id[i]);
+      }
+      printf("\n");
+      break;
+
+    case 1:
+      printf("CAN reset failed!\n");
+      break;
+
+    case 2:
+      printf("Setting bitrate failed!\n");
+    
+    default:
+      printf("ERRORCODE: %D", error);
+      break;
+    }
+  }
+
   return 0;
 }

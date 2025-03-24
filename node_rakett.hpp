@@ -11,6 +11,7 @@ int RocketLoop();
 
 bool IDisOfInterest(const can_frame incoming);
 
-void processCanbusMessage(MCP2515& canbus, std::queue<can_frame>& canRxfifo);
+bool processCanbusMessageRx(MCP2515& canbus, std::queue<can_frame>& canRxfifo);
+bool processCanbusMessageTx(MCP2515& canbus, std::queue<can_frame>& canRxfifo);
 
 #endif

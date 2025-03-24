@@ -12,6 +12,7 @@ int GroundLoop()
             mota.receive();
             mota.print();
           }
+          printf("bakkenode!");
     }
     return 0;
 }
