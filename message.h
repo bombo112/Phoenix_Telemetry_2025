@@ -8,11 +8,12 @@ static uint8_t MaxMessageLength = 252;
 class message {
     private:
         uint8_t type;
-        uint8_t length;
         uint8_t *data;
         int rssi;
         float snr;
     public:
+        uint8_t length;
+
         // Constructor: allocates memory for 'data' and copies the input array
         message(uint8_t TYPE, uint8_t LENGTH, uint8_t *DATA) : type(TYPE), length(LENGTH){
             // Allocate memory for data
@@ -43,7 +44,7 @@ class message {
             LoRa.write(length);      
             LoRa.write(data, length);               
             LoRa.endPacket(); 
-            length = 0;             
+            length = 0; // for testing
         }
         
         void receive(void){
@@ -82,6 +83,24 @@ class message {
             else{
                 return 0;
             }
+        }
+
+        can_frame message2can(void){
+            int id;
+            can_frame can;
+            can.can_id = 399;
+            memcpy(can.data, data+(length-CanDataLength), CanDataLength);
+            memcpy(&can.can_id, data+length-CanDataLength-CanIdLength, CanIdLength);
+            length -= (CanIdLength + CanDataLength);
+            return can;
+        }
+
+        void printCan(can_frame can){
+            printf("Id: %d Data: ", can.can_id);
+            for(int i=0; i< 8; i++){
+                printf("%d ",can.data[i]);
+            }
+            printf("\n");
         }
 
     };

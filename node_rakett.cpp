@@ -19,17 +19,14 @@ int RocketLoop()
     {
         processCanbusMessageRx(canbus, canRxfifo);
         processCanbusMessageTx(canbus, canTxfifo);
-        can_frame DenneMeldingenHerKanDuSendeRuben = canRxfifo.front(); canRxfifo.pop();
+        if(!canRxfifo.empty()){
+            can_frame DenneMeldingenHerKanDuSendeRuben = canRxfifo.front(); canRxfifo.pop();
+            if(flerecan.can2message(DenneMeldingenHerKanDuSendeRuben)){
+                flerecan.send();
+            }
+        }
     }
 }
-
-/*uint8_t data[4+8];
-            memcpy(data, &rx.can_id, sizeof(rx.can_id));
-            memcpy(data+4, &rx.data, sizeof(rx.data));
-            message melding(1, sizeof(data), data);
-
-            melding.send();*/
-
 
 bool IDisOfInterest(const can_frame incoming)
 {
