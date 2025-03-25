@@ -3,12 +3,18 @@ import time
 import keyboard
 import queue
 import json
+import msvcrt
+
+def tøm_buffer():
+    while msvcrt.kbhit():
+        msvcrt.getch()
 
 def Send_a_Message(): #Function for sending a message
-    time.sleep(0.0001) #Waiting
+    time.sleep(0.0001) #Waiting for 1 ms
+    tøm_buffer()
     can_id = input("CanID:")
     message = input("The message you want to send:")
-    Complete_message = can_id + message
+    Complete_message = can_id + message + "\n"
     ser.write(Complete_message.encode("utf-8"))     # write a message thru the serial port
 
 def on_key_event(event): #Function for sending a message when "esc" is pressed
@@ -23,7 +29,7 @@ Max_length = 10 #number for how many ascii signs max to read
 Baudrate = 115200 #Baudrate for the serial communications
 Timeout = 2 #how many seconds the port will wait for a message before closing
 
-Easy_reception = False #If False is makes json, If True it just prints as text
+Easy_reception = True #If False is makes json, If True it just prints as text
 Print_interval = 100 #Number to simulate a periodic sendRequest to server, number repressents the wait in ms between sending
 
 Program_on = True
@@ -70,7 +76,7 @@ try:
             Reminder_counter = 0
         Reminder_counter += 1
 
-        time.sleep(0.000001) #Waiting for 1 ms
+        time.sleep(0.000001) #Waiting for 1 ns
 except KeyboardInterrupt:
     print("Stoppkommando mottatt. Avslutter mottak") #For å avslutte lyttingen trykk CTRL+C i kommando-vinduet     
 
