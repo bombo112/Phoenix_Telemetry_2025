@@ -1,5 +1,8 @@
 #include "mcp2515.h"
 
+#ifndef MESSAGE_H
+#define MESSAGE_H
+
 static uint8_t CanIdLength = 4;
 static uint8_t CanDataLength = 8;
 static uint8_t MaxMessageLength = 252;
@@ -95,12 +98,6 @@ class message {
             return can;
         }
 
-        void printCan(can_frame can){
-            printf("%d", can.can_id);
-            for(int i=0; i< 8; i++){
-                printf(":%d",can.data[i]);
-            }
-            printf("\n");
-        }
-
     };
+
+#endif
