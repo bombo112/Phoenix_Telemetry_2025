@@ -96,9 +96,9 @@ class message {
         }
 
         void printCan(can_frame can){
-            printf("Id: %d Data: ", can.can_id);
+            printf("%d", can.can_id);
             for(int i=0; i< 8; i++){
-                printf("%d ",can.data[i]);
+                printf(":%d",can.data[i]);
             }
             printf("\n");
         }
