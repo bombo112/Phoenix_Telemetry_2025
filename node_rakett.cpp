@@ -12,21 +12,21 @@ int RocketLoop()
     if (canbus.setBitrate(CAN_1000KBPS, MCP_16MHZ) != MCP2515::ERROR_OK)    {printf("Setting bitrate failed!\n");   return 2;}
     canbus.setNormalMode();
 
+    message flerecan(1);
+
     //Main loop
     while(true)
     {
-        while (processCanbusMessageRx(canbus, canRxfifo)) {continue;}
-        while (processCanbusMessageTx(canbus, canTxfifo)) {continue;}
-        
-        if (!canRxfifo.empty())
-        {
-            can_frame RubenMelding = canRxfifo.front();
-            canRxfifo.pop();
+        processCanbusMessageRx(canbus, canRxfifo);
+        processCanbusMessageTx(canbus, canTxfifo);
+        if(!canRxfifo.empty()){
+            can_frame DenneMeldingenHerKanDuSendeRuben = canRxfifo.front(); canRxfifo.pop();
+            if(flerecan.can2message(DenneMeldingenHerKanDuSendeRuben)){
+                flerecan.send();
+            }
         }
     }
 }
-
-
 
 bool IDisOfInterest(const can_frame incoming)
 {
