@@ -17,16 +17,21 @@ int RocketLoop()
     //Main loop
     while(true)
     {
-        processCanbusMessageRx(canbus, canRxfifo);
-        processCanbusMessageTx(canbus, canTxfifo);
-        if(!canRxfifo.empty()){
-            can_frame DenneMeldingenHerKanDuSendeRuben = canRxfifo.front(); canRxfifo.pop();
-            if(flerecan.can2message(DenneMeldingenHerKanDuSendeRuben)){
+        while (processCanbusMessageRx(canbus, canRxfifo)) {continue;}
+        while (processCanbusMessageTx(canbus, canTxfifo)) {continue;}
+        
+        if (!canRxfifo.empty())
+        {
+            can_frame RubenMelding = canRxfifo.front();
+            canRxfifo.pop();
+            if(flerecan.can2message(RubenMelding)){
                 flerecan.send();
             }
         }
     }
 }
+
+
 
 bool IDisOfInterest(const can_frame incoming)
 {
@@ -45,15 +50,15 @@ bool processCanbusMessageRx(MCP2515& canbus, std::queue<can_frame>& fifo)
     if (canbus.readMessage(&canrx) != MCP2515::ERROR_OK)            {return false;}
     printf("Received message from ID: 0x%03X\n", canrx.can_id);
     if (!IDisOfInterest(canrx))                                     {return false;}
-    if (fifo.size() >= MaxBufferSize)                          {fifo.pop();}
+    if (fifo.size() >= MaxBufferSize)                               {fifo.pop();}
     fifo.push(canrx);
     return true;
 }
 
 bool processCanbusMessageTx(MCP2515& canbus, std::queue<can_frame>& fifo)
 {
-    if (fifo.empty())                                          {return false;}
-    can_frame canTx = fifo.front();                            fifo.pop();
+    if (fifo.empty())                                               {return false;}
+    can_frame canTx = fifo.front();                                 fifo.pop();
     if (canbus.sendMessage(&canTx) != MCP2515::ERROR_OK)            {return false;}
     return true;
 }
