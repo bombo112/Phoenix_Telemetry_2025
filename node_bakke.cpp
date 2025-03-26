@@ -1,4 +1,3 @@
-#include "mcp2515.h"
 #include "node_bakke.hpp"
 #include "LoRa-RP2040.h"
 #include "message.h"
@@ -6,11 +5,9 @@
 int GroundLoop()
 {
     message mota;
-    void printCan(can_frame can);
-    char carakterer[250];
-    int carakter = 0;
+    can_frame MotatCan;
     
-    while (0)
+    while(1)
     {
         if(LoRa.parsePacket() != 0){
             mota.receive();
@@ -20,36 +17,15 @@ int GroundLoop()
                 CanMessages[i] = mota.message2can();
             }
             for (int i = 0; i < NumberOfCan; i++){
-                printCan(CanMessages[i]);
+                PrintCan(CanMessages[i]);
             }   
-          }
-    }
-
-    while (true) {
-        // Poll for a character with a timeout (10ms)
-        char c = getchar_timeout_us(10000);  // 10ms timeout
-        if (c != PICO_ERROR_TIMEOUT) {
-            if(c = '\n'){
-                carakterer[carakter] = c;
-                for(int i=0; i< carakter; i++){
-                    printf("%c",carakterer[i]);
-                }
-                carakter = 0; 
-            }
-            else{
-                carakterer[carakter] = c;
-                carakter++;
-            }
         }
-        // Here you can add other non-blocking tasks if needed
-
+        UsbToCan();
     }
-    
-
     return 0;
 }
 
-void printCan(can_frame can){
+void PrintCan(can_frame can){
     printf("%d", can.can_id);
     for(int i=0; i< 8; i++){
         printf(":%d",can.data[i]);
@@ -57,4 +33,43 @@ void printCan(can_frame can){
     printf("\n");
 }
 
-//can_frame usb2can(){}
+void UsbToCan(){
+    static std::queue<int> UsbFifo;
+    int32_t NewUsbCharacter = getchar_timeout_us(10000);  // 10ms timeout
+    if (NewUsbCharacter == PICO_ERROR_TIMEOUT) {return;}
+    if (NewUsbCharacter != '\n'){
+        if (UsbFifo.size() >= MaxBufferSize){UsbFifo.pop();}
+        UsbFifo.push(NewUsbCharacter); 
+        return;
+    }
+    int FifoLength = UsbFifo.size();
+    char sentence[FifoLength];
+    int dataLength = 1;
+    for(int i = 0; i< FifoLength; i++){
+        if(UsbFifo.front() ==':'){dataLength++;}
+        sentence[i] = UsbFifo.front();
+        UsbFifo.pop();
+    }
+    if(dataLength != (1+CanDataLength)){return;}
+
+    can_frame NewCan;
+    std::vector<std::string> sentence_elements = split(sentence, ':');
+    NewCan.can_id = stoi(sentence_elements[0], 0, 10);
+    for (size_t i = 1; i < dataLength; i++){
+        NewCan.data[i-1] = stoi(sentence_elements[i], 0, 10);
+    }
+    
+    //test
+    PrintCan(NewCan);
+}
+
+
+std::vector<std::string> split(const std::string& s, char delimiter) {
+    std::vector<std::string> tokens;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delimiter)) {
+        tokens.push_back(item);
+    }
+    return tokens;
+}
