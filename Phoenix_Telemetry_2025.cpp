@@ -11,7 +11,8 @@
 #include "node_rakett.hpp"
 #include "message.h"
 #include "pico/unique_id.h"
-
+#include "logging.hpp"
+#include "canbus.hpp"
 
 void initLoRa()
 {
@@ -21,10 +22,16 @@ void initLoRa()
   else                              {printf("LoRa init succeeded.\n");}
 }
 
+
+
+
+
 int main()
 {
   stdio_init_all();
   initLoRa();
+
+  canbusInterface canbus;
 
   pico_unique_board_id_t currentBoard;
   pico_get_unique_board_id(&currentBoard);
@@ -50,13 +57,6 @@ int main()
       }
       printf("\n");
       break;
-
-    case 1:
-      printf("CAN reset failed!\n");
-      break;
-
-    case 2:
-      printf("Setting bitrate failed!\n");
     
     default:
       printf("ERRORCODE: %D", error);
