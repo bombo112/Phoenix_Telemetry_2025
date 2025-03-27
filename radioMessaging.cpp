@@ -1,4 +1,4 @@
-#include "message.hpp"
+#include "radioMessaging.hpp"
 
 
 // Constructor: allocates memory for 'data' and copies the input array

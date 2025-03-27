@@ -1,4 +1,5 @@
 #include "node_bakke.hpp"
+#include "serial.hpp"
 
 
 int GroundLoop()
@@ -15,63 +16,21 @@ int GroundLoop()
                 CanMessages[i] = mota.MessageToCan();
             }
             for (int i = 0; i < NumberOfCan; i++){
-                PrintCan(CanMessages[i]);
+                printCan(CanMessages[i]);
             }   
         }
-        UsbToCan();
+        serialReadCAN();
     }
     return 0;
 }
 
-void PrintCan(can_frame can){
-    printf("%d", can.can_id);
-    for(int i=0; i< 8; i++){
-        printf(":%d",can.data[i]);
+
+void printCan(can_frame message)
+{
+    printf("%d", message.can_id);
+    for (size_t i = 0; i < 8; i++)
+    {
+        printf(":%d", message.data[i]);
     }
     printf("\n");
-}
-
-void UsbToCan()
-{
-    static std::string sentence;
-
-    int32_t receivedCharacter = getchar_timeout_us(10000);  // 10ms timeout
-
-    if (receivedCharacter == PICO_ERROR_TIMEOUT) {return;}
-    if (receivedCharacter != '\n' && receivedCharacter != '\r')
-    {
-        sentence.push_back((char)receivedCharacter);
-        return;
-    }
-
-    std::vector<std::string> sentenceParts = split(sentence, ':');
-
-    if (sentenceParts.size() > 9)
-    {
-        sentence.clear();
-        return;
-    }
-
-    can_frame NewCan;
-    NewCan.can_id = stoi(sentenceParts[0], 0, 10);
-
-
-    for (size_t i = 1; i < sentenceParts.size(); i++)
-    {
-        NewCan.data[i-1] = stoi(sentenceParts[i], 0, 10);
-    }
-    
-    PrintCan(NewCan);   //debug
-}
-
-
-std::vector<std::string> split(const std::string& s, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delimiter)) {
-        tokens.push_back(item);
-    }
-    return tokens;
 }
