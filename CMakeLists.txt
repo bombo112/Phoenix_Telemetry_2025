@@ -44,7 +44,8 @@ add_executable( Phoenix_Telemetry_2025
                 node_bakke.cpp
                 logging.cpp
                 canbus.cpp
-                message.cpp)
+                message.cpp
+                radio.cpp)
 
 pico_set_program_name(Phoenix_Telemetry_2025 "Phoenix_Telemetry_2025")
 pico_set_program_version(Phoenix_Telemetry_2025 "0.1")
