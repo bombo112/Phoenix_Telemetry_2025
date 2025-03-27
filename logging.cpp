@@ -10,7 +10,7 @@ logging::~logging()
 
 }
 
-void logging::report(canbusInterface canbus)
+void logging::report()
 {
     can_frame buffersPartOne;   // send0    send1   send2   send3
     can_frame buffersPartTwo;   // CanRx    CanTx   UsbRx   UsbTx
@@ -47,11 +47,11 @@ void logging::report(canbusInterface canbus)
     memcpy(&signalQuality.data[0], &SNR,  BYTES_F32);
     memcpy(&signalQuality.data[4], &RSSI, BYTES_F32);
 
-    canbus.loopbackCanFrame(status);
-    canbus.loopbackCanFrame(signalQuality);
-    canbus.loopbackCanFrame(messageCounters);
-    canbus.loopbackCanFrame(buffersPartOne);
-    canbus.loopbackCanFrame(buffersPartTwo);
+    loopbackCanFrame(status);
+    loopbackCanFrame(signalQuality);
+    loopbackCanFrame(messageCounters);
+    loopbackCanFrame(buffersPartOne);
+    loopbackCanFrame(buffersPartTwo);
 
 
 

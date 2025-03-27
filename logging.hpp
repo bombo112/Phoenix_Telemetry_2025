@@ -47,8 +47,7 @@ public:
     inline void iterateUplinkMessageCount(void)    {uplinkMessageCount++;}
     inline void iterateDownlinkMessageCount(void)  {downlinkMessageCount++;}
 
-    void report(canbusInterface canbus);
-    void report(/*usbInterface usb*/);
+    void report();
     
     logging();
     ~logging();

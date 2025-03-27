@@ -6,31 +6,20 @@
 #ifndef CANBUS_HPP
 #define CANBUS_HPP
 
-class canbusInterface
-{
-private:
-    std::queue<can_frame> canRxfifo;
-    std::queue<can_frame> canTxfifo;
-    MCP2515 bus; //CAN Bus interface
 
-    bool processCanbusMessageRx();
-    bool processCanbusMessageTx();
-    bool IDisOfInterest(const can_frame incoming);
+inline std::queue<can_frame> canRxfifo;
+inline std::queue<can_frame> canTxfifo;
+inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
 
-public:
-    bool retriveNextCanFrame(can_frame &frameToBeRecieved);
-    bool sendCanFrame(can_frame &frameToBeSent);
-    bool loopbackCanFrame(can_frame &frameToBeSent);        // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
+bool processCanbusMessageRx();
+bool processCanbusMessageTx();
+bool IDisOfInterest(const can_frame incoming);
 
-    canbusInterface();
-};
+bool retriveNextCanFrame(can_frame &frameToBeRecieved);
+bool sendCanFrame(can_frame &frameToBeSent);
+bool loopbackCanFrame(can_frame &frameToBeSent);        // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
 
-
-
-
-
-
-
+void canbusInit();
 
 
 
