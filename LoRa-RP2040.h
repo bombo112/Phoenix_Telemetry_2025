@@ -22,7 +22,7 @@
 #define LORA_DEFAULT_SS_PIN        8
 #define LORA_DEFAULT_RESET_PIN     9
 #define LORA_DEFAULT_DIO0_PIN      7
-#endif
+
 
 #define PA_OUTPUT_RFO_PIN          0
 #define PA_OUTPUT_PA_BOOST_PIN     1
@@ -128,5 +128,7 @@ private:
   void (*_onCadDone)(bool);
   void (*_onTxDone)();
 };
+#endif
 
 extern LoRaClass LoRa;
+

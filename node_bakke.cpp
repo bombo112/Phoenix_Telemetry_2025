@@ -1,6 +1,5 @@
 #include "node_bakke.hpp"
-#include "LoRa-RP2040.h"
-#include "message.h"
+
 
 int GroundLoop()
 {
@@ -14,7 +13,7 @@ int GroundLoop()
             int NumberOfCan = mota.length/(CanIdLength + CanDataLength);
             can_frame CanMessages[NumberOfCan];
             for (int i = NumberOfCan-1; i > -1; i--){
-                CanMessages[i] = mota.message2can();
+                CanMessages[i] = mota.MessageToCan();
             }
             for (int i = 0; i < NumberOfCan; i++){
                 PrintCan(CanMessages[i]);
