@@ -1,6 +1,5 @@
 #include "node_rakett.hpp"
-#include "LoRa-RP2040.h"
-#include "message.h"
+
 
 int RocketLoop()
 {   

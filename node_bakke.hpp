@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include "LoRa-RP2040.h"
+#include "message.hpp"
 
 
 int GroundLoop();
