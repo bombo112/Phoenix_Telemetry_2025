@@ -31,7 +31,6 @@ void message::send(void){
     LoRa.write(length);      
     LoRa.write(data, length);               
     LoRa.endPacket(); 
-    length = 0; // for testing
 }
 
 void message::receive(void){
