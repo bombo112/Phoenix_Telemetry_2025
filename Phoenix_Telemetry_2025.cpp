@@ -18,7 +18,7 @@ void initLoRa()
 {
   LoRa.setPins(Pin_Radio_CS, Pin_Radio_RESET, Pin_Radio_DIO0);
 
-  if  (!LoRa.begin(RadioFrekvens))  {printf("LoRa init failed. Check your connections.\n");while (true);}
+  if  (!LoRa.begin(RadioFrekvens))  {while (true) {printf("LoRa init failed. Check your connections.\n");}}
   else                              {printf("LoRa init succeeded.\n");}
 }
 
@@ -28,8 +28,11 @@ void initLoRa()
 
 int main()
 {
+  
   stdio_init_all();
   initLoRa();
+  
+  
 
   //canbusInterface canbus;
 
