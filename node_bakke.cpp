@@ -6,7 +6,6 @@ int GroundLoop()
 {
     message mota;
     can_frame MotatCan;
-    
     while(1)
     {
         if(LoRa.parsePacket() != 0){
@@ -33,38 +32,42 @@ void PrintCan(can_frame can){
     printf("\n");
 }
 
-void UsbToCan(){
-    static std::queue<int> UsbFifo;
-    int32_t NewUsbCharacter = getchar_timeout_us(10000);  // 10ms timeout
-    if (NewUsbCharacter == PICO_ERROR_TIMEOUT) {return;}
-    if (NewUsbCharacter != '\n'){
-        if (UsbFifo.size() >= MaxBufferSize){UsbFifo.pop();}
-        UsbFifo.push(NewUsbCharacter); 
+void UsbToCan()
+{
+    static std::string sentence;
+
+    int32_t receivedCharacter = getchar_timeout_us(10000);  // 10ms timeout
+
+    if (receivedCharacter == PICO_ERROR_TIMEOUT) {return;}
+    if (receivedCharacter != '\n' && receivedCharacter != '\r')
+    {
+        sentence.push_back((char)receivedCharacter);
         return;
     }
-    int FifoLength = UsbFifo.size();
-    char sentence[FifoLength];
-    int dataLength = 1;
-    for(int i = 0; i< FifoLength; i++){
-        if(UsbFifo.front() ==':'){dataLength++;}
-        sentence[i] = UsbFifo.front();
-        UsbFifo.pop();
+
+    std::vector<std::string> sentenceParts = split(sentence, ':');
+
+    if (sentenceParts.size() > 9)
+    {
+        sentence.clear();
+        return;
     }
-    if(dataLength != (1+CanDataLength)){return;}
 
     can_frame NewCan;
-    std::vector<std::string> sentence_elements = split(sentence, ':');
-    NewCan.can_id = stoi(sentence_elements[0], 0, 10);
-    for (size_t i = 1; i < dataLength; i++){
-        NewCan.data[i-1] = stoi(sentence_elements[i], 0, 10);
+    NewCan.can_id = stoi(sentenceParts[0], 0, 10);
+
+
+    for (size_t i = 1; i < sentenceParts.size(); i++)
+    {
+        NewCan.data[i-1] = stoi(sentenceParts[i], 0, 10);
     }
     
-    //test
-    PrintCan(NewCan);
+    PrintCan(NewCan);   //debug
 }
 
 
-std::vector<std::string> split(const std::string& s, char delimiter) {
+std::vector<std::string> split(const std::string& s, char delimiter)
+{
     std::vector<std::string> tokens;
     std::stringstream ss(s);
     std::string item;
