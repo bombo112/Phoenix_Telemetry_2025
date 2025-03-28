@@ -37,7 +37,7 @@ int main()
   pico_unique_board_id_t currentBoard;
   pico_get_unique_board_id(&currentBoard);
   
-  //GroundLoop();
+  RocketLoop();
   int error = 0;
   if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = RocketLoop();}
   if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = GroundLoop();}
