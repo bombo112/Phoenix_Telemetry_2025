@@ -21,7 +21,6 @@ int RocketLoop()
                 radioMelling.send();
                 radioMelling.length = 0;
             }
-            
         }
     }
 }
