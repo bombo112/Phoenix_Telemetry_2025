@@ -1,3 +1,4 @@
+#include "canbus.hpp"
 #include "logging.hpp"
 #include "radioMessaging.hpp"
 #include "radio.hpp"

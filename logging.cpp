@@ -12,17 +12,17 @@ logging::~logging()
 
 void logging::report()
 {
-    can_frame buffersPartOne;   // send0    send1   send2   send3
-    can_frame buffersPartTwo;   // CanRx    CanTx   UsbRx   UsbTx
-    can_frame messageCounters;  // downlink         uplink
-    can_frame signalQuality;    // SNR              RSSI
-    can_frame status;
+    canFrame buffersPartOne;   // send0    send1   send2   send3
+    canFrame buffersPartTwo;   // CanRx    CanTx   UsbRx   UsbTx
+    canFrame messageCounters;  // downlink         uplink
+    canFrame signalQuality;    // SNR              RSSI
+    canFrame status;
 
-    status.can_id = 200;
-    signalQuality.can_id = 201;
-    messageCounters.can_id = 202;
-    buffersPartOne.can_id = 203;
-    buffersPartTwo.can_id = 204;
+    status.id = 200;
+    signalQuality.id = 201;
+    messageCounters.id = 202;
+    buffersPartOne.id = 203;
+    buffersPartTwo.id = 204;
 
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);

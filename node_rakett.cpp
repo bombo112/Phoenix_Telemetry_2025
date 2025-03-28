@@ -14,7 +14,7 @@ int RocketLoop()
     while(true)
     {
         processCanbusMessageRx();
-        can_frame nextCanFrame;
+        canFrame nextCanFrame;
         if (retriveNextCanFrame(nextCanFrame))
         {
             if(radioMelling.CanToMessage(nextCanFrame))
