@@ -6,6 +6,13 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+inline canFrame CanSizeMessurment;
+
+static constexpr uint8_t CanIdLength = sizeof(CanSizeMessurment.id);
+static constexpr uint8_t CanDeltaLength = sizeof(CanSizeMessurment.delta);
+static constexpr uint8_t CanDataLength = sizeof(CanSizeMessurment.data);
+static constexpr uint8_t MaxMessageLength = 252;
+
 class message {
     private:
         uint8_t *data;

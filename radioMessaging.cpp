@@ -3,6 +3,7 @@
 message::message(){
     // Allocate memory for data
     data = new uint8_t[MaxMessageLength];
+    length = 0;
 }
 
 // Destructor: free the allocated memory
@@ -45,7 +46,7 @@ bool message::CanToMessage(canFrame can){
     memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
     memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
     length += CanIdLength + CanDeltaLength + CanDataLength;
-    if(length>MaxMessageLength - CanIdLength - CanDeltaLength - CanDataLength){
+    if(length>(MaxMessageLength - CanIdLength - CanDeltaLength - CanDataLength)){
         return 1;
     }
     else{
@@ -58,7 +59,7 @@ canFrame message::MessageToCan(void){
     canFrame can;
     can.id = 399;
     memcpy(can.data, data+length-CanDataLength, CanDataLength);
-    memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanIdLength);
+    memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
     memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);
     length -= (CanIdLength +CanDeltaLength+ CanDataLength);
     return can;
