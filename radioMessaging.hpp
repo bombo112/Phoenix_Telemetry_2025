@@ -12,12 +12,9 @@ class message {
         int rssi;
         float snr;
     public:
-        uint8_t type;
         uint8_t length;
 
-        message(uint8_t TYPE, uint8_t LENGTH, uint8_t *DATA);
         message();
-        message(uint8_t TYPE);
         ~message();
         void send(void);
         void receive(void);

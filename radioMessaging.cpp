@@ -1,23 +1,8 @@
 #include "radioMessaging.hpp"
 
-
-// Constructor: allocates memory for 'data' and copies the input array
-message::message(uint8_t TYPE, uint8_t LENGTH, uint8_t *DATA) : type(TYPE), length(LENGTH){
-    // Allocate memory for data
-    data = new uint8_t[length];
-    // Copy the array content from DATA to data
-    memcpy(data, DATA, length);
-}
-
 message::message(){
     // Allocate memory for data
-    data = new uint8_t[256];
-}
-
-message::message(uint8_t TYPE) : type(TYPE){
-    length = 0;
-    // Allocate memory for data
-    data = new uint8_t[256];
+    data = new uint8_t[MaxMessageLength];
 }
 
 // Destructor: free the allocated memory
@@ -26,17 +11,14 @@ message::~message() {
 }
 
 void message::send(void){
-    LoRa.beginPacket();             
-    LoRa.write(type);           
+    LoRa.beginPacket();                       
     LoRa.write(length);      
     LoRa.write(data, length);               
     LoRa.endPacket(); 
 }
 
 void message::receive(void){
-    type = LoRa.read(); 
     length = LoRa.read(); 
-    
     uint8_t DATA[length];
     for(int i=0; i< length; i++) {
         DATA[i] = LoRa.read();
@@ -47,7 +29,6 @@ void message::receive(void){
   }
 
 void message::print(void){
-    printf("Type: %d\n", type);
     printf("Message length: %d\n", length);
     printf("Message: ");
     for(int i=0; i< length; i++){
