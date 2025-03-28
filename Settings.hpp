@@ -35,12 +35,4 @@ constexpr size_t MaxBufferSize = 2000;
 static constexpr pico_unique_board_id_t RocketNodeId = {.id {0xD0,0x61,0x5D,0xC9,0x28,0xCC,0x1D,0x14}}; //D0615DC928CC1D14
 static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
 
-
-//For radio
-static uint8_t CanIdLength = 4;
-static uint8_t CanDeltaLength = 2;
-static uint8_t CanDataLength = 8;
-static uint8_t MaxMessageLength = 252;
-
-
 #endif
