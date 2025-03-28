@@ -6,6 +6,5 @@
 
 
 int GroundLoop();
-void printCan(can_frame message);
 
 #endif

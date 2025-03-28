@@ -1,4 +1,4 @@
-#include "mcp2515.h"
+#include "canbus.hpp"
 #include <stdio.h>
 #include "LoRa-RP2040.h"
 #include "Settings.hpp"
@@ -19,8 +19,8 @@ class message {
         void send(void);
         void receive(void);
         void print(void);
-        bool CanToMessage(can_frame can);
-        can_frame MessageToCan(void);
+        bool CanToMessage(canFrame can);
+        canFrame MessageToCan(void);
     };
 
 #endif
