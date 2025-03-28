@@ -7,10 +7,6 @@
 #define CANBUS_HPP
 
 
-inline std::queue<can_frame> canRxfifo;
-inline std::queue<can_frame> canTxfifo;
-inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
-
 class canFrame
 {
 public:
@@ -19,15 +15,22 @@ public:
     uint8_t data[8];
 
     void print();
+    canFrame(can_frame frameToConvert);
+    can_frame convert();
+    canFrame();
 };
+
+inline std::queue<canFrame> canRxfifo;
+inline std::queue<canFrame> canTxfifo;
+inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
 
 bool processCanbusMessageRx();
 bool processCanbusMessageTx();
-bool IDisOfInterest(const can_frame incoming);
+bool IDisOfInterest(const canFrame incoming);
 
-bool retriveNextCanFrame(can_frame &frameToBeRecieved);
-bool sendCanFrame(can_frame &frameToBeSent);
-bool loopbackCanFrame(can_frame &frameToBeSent);        // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
+bool retriveNextCanFrame(canFrame &frameToBeRecieved);
+bool sendCanFrame(canFrame &frameToBeSent);
+bool loopbackCanFrame(canFrame &frameToBeSent);        // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
 
 void canbusInit();
 

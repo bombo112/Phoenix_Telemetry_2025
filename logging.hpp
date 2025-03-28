@@ -3,7 +3,6 @@
 #include <cstring>
 #include <algorithm>
 #include <queue>
-#include "mcp2515.h"
 #include "canbus.hpp"
 
 #ifndef LOGGING_HPP

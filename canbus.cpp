@@ -8,36 +8,57 @@ void canFrame::print()
     printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, delta, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 }
 
+canFrame::canFrame(can_frame frameToConvert)
+{
+   id = frameToConvert.can_id;
+   delta = 0;
+   for (size_t i = 0; i < 8; i++)   {data[i] = frameToConvert.data[i];}
+}
+
+canFrame::canFrame()
+{
+    id = 0;
+    delta = 0;
+    for (size_t i = 0; i < 8; i++)  {data[i] = 0;}
+}
+
+
+can_frame canFrame::convert()
+{
+    can_frame frameToConvert;
+    frameToConvert.can_id = id;
+    for (size_t i = 0; i < 8; i++)  {frameToConvert.data[i] = data[i] ;}
+    return frameToConvert;
+}
+
+
 void canbusInit()
 {
-    
-    gpio_init(Pin_Can_Cs);
+    gpio_init(Pin_Can_Cs);                  //set CS
     gpio_set_dir(Pin_Can_Cs, GPIO_OUT);
     gpio_put(Pin_Can_Cs, 1);
 
-    gpio_init(Pin_Can_RESET );
+    gpio_init(Pin_Can_RESET );              //set RESET
     gpio_set_dir(Pin_Can_RESET , GPIO_OUT);
     gpio_put(Pin_Can_RESET , 1);
 
-    gpio_init(Pin_Can_STBY);
+    gpio_init(Pin_Can_STBY);                //pulldown STBY
     gpio_set_dir(Pin_Can_STBY, GPIO_IN);
     gpio_pull_down(Pin_Can_STBY);
 
-    
-    gpio_put(Pin_Can_RESET , 0);
+    gpio_put(Pin_Can_RESET , 0);            //hardware reset mcp2515
     sleep_ms(100);
     gpio_put(Pin_Can_RESET , 1);
     sleep_ms(2);
     
-
     if (canbus.reset() != MCP2515::ERROR_OK)                                {while (true){printf("CAN reset failed!\n");}}
     if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {while (true){printf("Setting bitrate failed!\n");}}
     canbus.setNormalMode();
 }
 
-bool IDisOfInterest(const can_frame incoming)
+bool IDisOfInterest(const canFrame incoming)
 {
-    uint32_t id = incoming.can_id;
+    uint32_t id = incoming.id;
     for (uint32_t i = 0; i < sizeof(idsToSendToGround); i++)
     {
         if (id == idsToSendToGround[i]) {return true;}
@@ -50,12 +71,13 @@ bool processCanbusMessageRx()
 {
     struct can_frame canrx;
     MCP2515::ERROR error = canbus.readMessage(&canrx);
-    //printf("ERROR: %d\n", error);
-    if (error != MCP2515::ERROR_OK)           {return false;}
-    printf("Received message from ID: 0x%03X\n", canrx.can_id);
-    if (!IDisOfInterest(canrx))                                 {return false;}
+    if (error != MCP2515::ERROR_OK)                             {return false;}
+    canFrame canRx(canrx);
+    canRx.print();  //debug
+
+    if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
-    canRxfifo.push(canrx);
+    canRxfifo.push(canRx);
     return true;
 }
 
@@ -63,13 +85,14 @@ bool processCanbusMessageRx()
 bool processCanbusMessageTx()
 {
     if (canTxfifo.empty())                                              {return false;}
-    can_frame canTx = canTxfifo.front();                                canTxfifo.pop();
-    if (canbus.sendMessage(&canTx) != MCP2515::ERROR_OK)                   {return false;}
+    canFrame canTx = canTxfifo.front();                                 canTxfifo.pop();
+    can_frame cantx = canTx.convert();
+    if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)                {return false;}
     return true;
 }
 
 
-bool retriveNextCanFrame(can_frame &frameToBeRecieved)
+bool retriveNextCanFrame(canFrame &frameToBeRecieved)
 {
     if(!canRxfifo.empty())
     {
@@ -81,7 +104,7 @@ bool retriveNextCanFrame(can_frame &frameToBeRecieved)
 }
 
 
-bool sendCanFrame(can_frame &frameToBeSent)
+bool sendCanFrame(canFrame &frameToBeSent)
 {
     if (canTxfifo.size() >= MaxBufferSize)  {canTxfifo.pop();}
     canTxfifo.push(frameToBeSent);
@@ -89,9 +112,9 @@ bool sendCanFrame(can_frame &frameToBeSent)
 }
 
 
-bool loopbackCanFrame(can_frame &frameToBeSent)
+bool loopbackCanFrame(canFrame &frameToBeSent)
 {
-    if (canTxfifo.size() >= MaxBufferSize)  {canTxfifo.pop();}
+    if (canTxfifo.size() >= MaxBufferSize)                      {canTxfifo.pop();}
     canTxfifo.push(frameToBeSent);
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRxfifo.push(frameToBeSent);
