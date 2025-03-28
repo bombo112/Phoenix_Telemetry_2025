@@ -35,5 +35,15 @@ static constexpr pico_unique_board_id_t RocketNodeId = {.id {0x06,0xd7,0xea,0x02
 static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xc5,0xa8,0xe8,0x64,0xe9,0x5c,0xa6,0x46}}; //c5a8e864e95ca646
 
 
+//For radio
+static uint8_t CanIdLength = 4;
+static uint8_t CanDataLength = 8;
+static uint8_t MaxMessageLength = 252;
+
+
+constexpr uint32_t Type1Ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+constexpr uint32_t Type10Ids[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+constexpr uint32_t Type20Ids[] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+constexpr uint32_t Type30Ids[] = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
 
 #endif

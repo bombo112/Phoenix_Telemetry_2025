@@ -9,26 +9,37 @@
 #include "LoRa-RP2040.h"
 #include "node_bakke.hpp"
 #include "node_rakett.hpp"
-#include "message.h"
+#include "radioMessaging.hpp"
 #include "pico/unique_id.h"
-
+#include "logging.hpp"
+#include "canbus.hpp"
 
 void initLoRa()
 {
   LoRa.setPins(Pin_Radio_CS, Pin_Radio_RESET, Pin_Radio_DIO0);
 
-  if  (!LoRa.begin(RadioFrekvens))  {printf("LoRa init failed. Check your connections.\n");while (true);}
+  if  (!LoRa.begin(RadioFrekvens))  {while (true) {printf("LoRa init failed. Check your connections.\n");}}
   else                              {printf("LoRa init succeeded.\n");}
 }
 
+
+
+
+
 int main()
 {
+  
   stdio_init_all();
   initLoRa();
+  
+  
+
+  //canbusInterface canbus;
 
   pico_unique_board_id_t currentBoard;
   pico_get_unique_board_id(&currentBoard);
   
+  //GroundLoop();
   int error = 0;
   if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = RocketLoop();}
   if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) {error = GroundLoop();}
@@ -50,13 +61,6 @@ int main()
       }
       printf("\n");
       break;
-
-    case 1:
-      printf("CAN reset failed!\n");
-      break;
-
-    case 2:
-      printf("Setting bitrate failed!\n");
     
     default:
       printf("ERRORCODE: %D", error);
