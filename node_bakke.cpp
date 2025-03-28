@@ -12,8 +12,7 @@ int GroundLoop()
     {
         if(LoRa.parsePacket() != 0){
             mota.receive();
-            mota.print();
-            int NumberOfCan = mota.length/(CanIdLength + CanDataLength);
+            int NumberOfCan = mota.length/(CanIdLength + CanDeltaLength + CanDataLength);
             canFrame CanMessages[NumberOfCan];
             for (int i = NumberOfCan-1; i > -1; i--){
                 CanMessages[i] = mota.MessageToCan();
