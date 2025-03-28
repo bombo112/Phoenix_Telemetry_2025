@@ -6,23 +6,24 @@
 #define SETTINGS_HPP
 
 //Radio pinner
-static constexpr uint8_t Pin_Radio_CS     = 17;
-static constexpr uint8_t Pin_Radio_SCK    = 18;
-static constexpr uint8_t Pin_Radio_MISO   = 16;
-static constexpr uint8_t Pin_Radio_MOSI   = 19;
-static constexpr uint8_t Pin_Radio_DIO0   = 20;
-static constexpr uint8_t Pin_Radio_DIO1   = 21;
-static constexpr uint8_t Pin_Radio_DIO2   = 22;
-static constexpr uint8_t Pin_Radio_DIO3   = 26;
-static constexpr uint8_t Pin_Radio_DIO4   = 27;
-static constexpr uint8_t Pin_Radio_RESET  = 28;
+static constexpr uint8_t Pin_Radio_CS       = 17;
+static constexpr uint8_t Pin_Radio_SCK      = 18;
+static constexpr uint8_t Pin_Radio_MISO     = 16;
+static constexpr uint8_t Pin_Radio_MOSI     = 19;
+static constexpr uint8_t Pin_Radio_DIO0     = 20;
+static constexpr uint8_t Pin_Radio_DIO1     = 21;
+static constexpr uint8_t Pin_Radio_DIO2     = 22;
+static constexpr uint8_t Pin_Radio_DIO3     = 26;
+static constexpr uint8_t Pin_Radio_DIO4     = 27;
+static constexpr uint8_t Pin_Radio_RESET    = 28;
 
 //CAN-Bus Pinner
-static constexpr uint8_t Pin_Can_Cs       = 13;
-static constexpr uint8_t Pin_Can_MOSI     = 15;
-static constexpr uint8_t Pin_Can_MISO     = 12;
-static constexpr uint8_t Pin_Can_SCK      = 14;
-static constexpr uint8_t Pin_Can_RESET    = 10;
+static constexpr uint8_t Pin_Can_Cs         = 13;
+static constexpr uint8_t Pin_Can_MOSI       = 15;
+static constexpr uint8_t Pin_Can_MISO       = 12;
+static constexpr uint8_t Pin_Can_SCK        = 14;
+static constexpr uint8_t Pin_Can_RESET      = 10;
+static constexpr uint8_t Pin_Can_STBY       =  4;
 
 
 static constexpr uint64_t RadioFrekvens   = 433E6;
@@ -31,8 +32,8 @@ constexpr uint32_t idsToSendToGround[] = {200, 201, 202, 203, 204, 300, 301, 302
 
 constexpr size_t MaxBufferSize = 2000;
 
-static constexpr pico_unique_board_id_t RocketNodeId = {.id {0x06,0xd7,0xea,0x02,0xbe,0xcb,0x5b,0x99}}; //06d7ea02becb5b99
-static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xc5,0xa8,0xe8,0x64,0xe9,0x5c,0xa6,0x46}}; //c5a8e864e95ca646
+static constexpr pico_unique_board_id_t RocketNodeId = {.id {0xD0,0x61,0x5D,0xC9,0x28,0xCC,0x1D,0x14}}; //D0615DC928CC1D14
+static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
 
 
 //For radio
@@ -42,8 +43,8 @@ static uint8_t MaxMessageLength = 252;
 
 
 constexpr uint32_t Type1Ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-constexpr uint32_t Type10Ids[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
-constexpr uint32_t Type20Ids[] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+constexpr uint32_t Type10Ids[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 201};
+constexpr uint32_t Type20Ids[] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29,204};
 constexpr uint32_t Type30Ids[] = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
 
 #endif

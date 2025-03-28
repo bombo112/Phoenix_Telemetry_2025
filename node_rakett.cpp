@@ -3,8 +3,12 @@
 
 int RocketLoop()
 {   
+    canbusInit();
     logging logger;
     message radioMelling;
+
+    
+    bool KlarForSending = 1;
 
     //Main loop
     while(true)
@@ -18,7 +22,6 @@ int RocketLoop()
                 radioMelling.send();
                 radioMelling.length = 0;
             }
-            
         }
     }
 }

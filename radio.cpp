@@ -40,6 +40,45 @@ void MessageToFifo(message message){
             if (type30fifo.size() >= MaxBufferSize){type30fifo.pop();}
             type30fifo.push(message);
             break;
+        default:
+            break;
+        
+    }
+}
+
+void CanToMessegeFifo(can_frame CanFrame){
+    switch (TypeForId(CanFrame)){
+        case 1:
+            if(RadioMessageType1.CanToMessage(CanFrame))
+            {
+                MessageToFifo(RadioMessageType1);
+                RadioMessageType1.length = 0;
+            }
+            break;
+        case 10:
+            if(RadioMessageType10.CanToMessage(CanFrame))
+            {
+                MessageToFifo(RadioMessageType10);
+                RadioMessageType10.length = 0;
+            }
+            break;
+        case 20:
+            if(RadioMessageType20.CanToMessage(CanFrame))
+            {
+                MessageToFifo(RadioMessageType20);
+                RadioMessageType20.length = 0;
+            }
+            break;
+        case 30:
+            if(RadioMessageType30.CanToMessage(CanFrame))
+            {
+                MessageToFifo(RadioMessageType30);
+                RadioMessageType30.length = 0;
+            }
+            break;
+        
+        default:
+            break;
     }
 }
 
