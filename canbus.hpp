@@ -1,5 +1,5 @@
 #include <queue>
-#include <stdio.h>
+#include <cstdio>
 #include "mcp2515.h"
 #include "Settings.hpp"
 
@@ -10,6 +10,16 @@
 inline std::queue<can_frame> canRxfifo;
 inline std::queue<can_frame> canTxfifo;
 inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
+
+class canFrame
+{
+public:
+    uint16_t id;
+    uint16_t delta;
+    uint8_t data[8];
+
+    void print();
+};
 
 bool processCanbusMessageRx();
 bool processCanbusMessageTx();
