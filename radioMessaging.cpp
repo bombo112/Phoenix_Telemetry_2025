@@ -12,7 +12,7 @@ message::~message() {
 
 void message::send(void){
     LoRa.beginPacket();                       
-    LoRa.write(length);      
+    LoRa.write(length);;       
     LoRa.write(data, length);               
     LoRa.endPacket(); 
 }
@@ -26,7 +26,7 @@ void message::receive(void){
     rssi = LoRa.packetRssi();
     snr = LoRa.packetSnr();
     memcpy(data, DATA, length);
-  }
+}
 
 void message::print(void){
     printf("Message length: %d\n", length);
@@ -40,11 +40,12 @@ void message::print(void){
 }
 
 
-bool message::CanToMessage(can_frame can){
-    memcpy(data+length, &can.can_id, sizeof(can.can_id));
-    memcpy(data+length+CanIdLength, &can.data, sizeof(can.data));
-    length += CanIdLength + CanDataLength;
-    if(length>MaxMessageLength - CanIdLength - CanDataLength){
+bool message::CanToMessage(canFrame can){
+    memcpy(data+length, &can.id, sizeof(can.id));
+    memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
+    memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
+    length += CanIdLength + CanDeltaLength + CanDataLength;
+    if(length>MaxMessageLength - CanIdLength - CanDeltaLength - CanDataLength){
         return 1;
     }
     else{
@@ -52,12 +53,13 @@ bool message::CanToMessage(can_frame can){
     }
 }
 
-can_frame message::MessageToCan(void){
+canFrame message::MessageToCan(void){
     int id;
-    can_frame can;
-    can.can_id = 399;
-    memcpy(can.data, data+(length-CanDataLength), CanDataLength);
-    memcpy(&can.can_id, data+length-CanDataLength-CanIdLength, CanIdLength);
-    length -= (CanIdLength + CanDataLength);
+    canFrame can;
+    can.id = 399;
+    memcpy(can.data, data+length-CanDataLength, CanDataLength);
+    memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanIdLength);
+    memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);
+    length -= (CanIdLength +CanDeltaLength+ CanDataLength);
     return can;
 }
