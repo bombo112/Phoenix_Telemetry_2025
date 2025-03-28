@@ -4,7 +4,7 @@
 int RocketLoop()
 {   
     logging logger;
-    message radioMelling;
+    int KlarForSending = true;
 
     //Main loop
     while(true)
@@ -13,12 +13,12 @@ int RocketLoop()
         can_frame nextCanFrame;
         if (retriveNextCanFrame(nextCanFrame))
         {
-            if(radioMelling.CanToMessage(nextCanFrame))
-            {
-                radioMelling.send();
-                radioMelling.length = 0;
-            }
-            
+            printf("Canbuss motat\n");
+            CanToMessegeFifo(nextCanFrame);
+        }
+        if(KlarForSending){
+            CanToMessegeFifo(nextCanFrame);
+            FifoToSend();
         }
     }
 }
