@@ -3,6 +3,7 @@
 
 int RocketLoop()
 {   
+    canbusInit();
     logging logger;
     message radioMelling;
 
