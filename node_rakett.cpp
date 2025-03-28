@@ -7,7 +7,7 @@ int RocketLoop()
     message radioMelling;
 
     
-    
+    bool KlarForSending = 1;
 
     //Main loop
     while(true)
@@ -16,12 +16,10 @@ int RocketLoop()
         can_frame nextCanFrame;
         if (retriveNextCanFrame(nextCanFrame))
         {
-            printf("OK\n");
-            if(radioMelling.CanToMessage(nextCanFrame))
-            {
-                radioMelling.send();
-                radioMelling.length = 0;
-            }
+            CanToMessegeFifo(nextCanFrame);
+        }
+        if(KlarForSending){
+            FifoToSend();
         }
     }
 }

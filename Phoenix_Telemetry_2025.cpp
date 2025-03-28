@@ -31,10 +31,9 @@ int main()
   
   stdio_init_all();
   initLoRa();
-  
-  
   canbusInit();
-
+  
+  
   pico_unique_board_id_t currentBoard;
   pico_get_unique_board_id(&currentBoard);
   
