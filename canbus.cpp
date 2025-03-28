@@ -2,6 +2,12 @@
 
 
 
+
+void canFrame::print()
+{
+    printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, delta, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+}
+
 void canbusInit()
 {
     

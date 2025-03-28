@@ -2,6 +2,7 @@ import serial
 import time
 import queue
 import json
+import lookUpTable as LUT
 
 #--------------------------------PC-test-relevant-imports------------------------
 import keyboard
@@ -17,48 +18,8 @@ def Send_a_Message(): #Function for sending a message
     tøm_buffer()
     can_id = input("CanID:")
     message = input("The message you want to send(Launch_Rocket)(Terminate Flight):")
-    complete_message = commandToCan_Convertion(can_id + ":" + message)
+    complete_message = LUT.commandToCan_Convertion(can_id + ":" + message)
     ser.write(complete_message.encode("utf-8"))     # write a message thru the serial 
-    
-
-def commandToCan_Convertion(message):
-    can_id, command = message.split(":")
-    mapping = {
-        "Launch_Rocket": [8, 7, 6, 5, 4, 3, 2, 1],
-        "Terminate Flight": [255, 0, 255, 0, 255, 0, 255, 0]
-    }
-    bytes_list = mapping.get(command)
-    if bytes_list is None:
-        raise ValueError(f"Ukjent kommando: {command}")
-    return f"{can_id}:{':'.join(map(str, bytes_list))}\n"
-
-
-def canTocommand_convertion(text):
-    bitListe = list()    
-
-    can_id, content = text.split(":") #Splits string
-    intCan_id = int(can_id) 
-    intContent = int(content)
-
-    result = {"id": intCan_id}
-
-    #------------Check-type-----------------------
-    if intCan_id == 200: message_type = "status"
-    else: message_type = "float"
-    
-    #------------Result-based-on-type-------------
-    #1x 8/64 Byte/bit ---- float value
-    if message_type == 'float': 
-        result["value"] = intContent
-
-    #1x 8/64 Byte/bit ---- status bits 
-    elif message_type == 'status': 
-        for i in range(63):
-            bitListe.append((intContent >> (63 - i)) & 1)
-        result["value"] = bitListe  
-    else:
-        raise ValueError("Ukjent message_type. Bruk 'float' eller 'status'.")
-    return result
 
 
 def on_key_event(event): #Function for sending a message when "esc" is pressed
@@ -96,7 +57,7 @@ try:
             if Easy_reception is False:
                 raw_data = ser.readline() 
                 raw_data_text = raw_data.decode("utf-8") #Turns to sting, ("Canid:n1n2n3n4n5n6n7n8")
-                Data_to_send = canTocommand_convertion(raw_data_text) #function that gives the right current message
+                Data_to_send = LUT.canTocommand_convertion(raw_data_text) #function that gives the right current message
                 Queue.put(Data_to_send) #Puts data into FIFO Queue
 
                 #If statment to simulate periodic sending to server
