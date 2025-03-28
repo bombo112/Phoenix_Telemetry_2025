@@ -36,3 +36,7 @@ def canTocommand_convertion(text):
     else:
         raise ValueError("Ukjent message_type. Bruk 'float' eller 'status'.")
     return result
+
+if __name__ == "__main__":
+    ferdig_data1 = canTocommand_convertion("200:12345")
+    print(ferdig_data1)
