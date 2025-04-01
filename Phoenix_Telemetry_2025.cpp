@@ -1,6 +1,6 @@
 
 #include "Settings.hpp"
-#include <stdio.h>
+#include "pico/stdio.h"
 #include "pico/stdlib.h"
 #include "hardware/dma.h"
 #include "hardware/timer.h"

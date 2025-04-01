@@ -1,9 +1,10 @@
 #include "node_bakke.hpp"
-#include "serial.hpp"
+
 
 
 int GroundLoop()
 {
+    serialInit();
     
     
     message mota;
@@ -21,7 +22,6 @@ int GroundLoop()
                 CanMessages[i].print();
             }   
         }
-        serialReadCAN();
     }
     return 0;
 }

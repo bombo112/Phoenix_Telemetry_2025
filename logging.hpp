@@ -1,5 +1,4 @@
 #include "pico/stdlib.h"
-#include <stdio.h>
 #include <cstring>
 #include <algorithm>
 #include <queue>

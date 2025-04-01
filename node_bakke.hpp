@@ -1,9 +1,10 @@
-#ifndef NODE_BAKKE_HPP
-#define NODE_BAKKE_HPP
 #include "Settings.hpp"
 #include "LoRa-RP2040.h"
 #include "radioMessaging.hpp"
+#include "serial.hpp"
 
+#ifndef NODE_BAKKE_HPP
+#define NODE_BAKKE_HPP
 
 int GroundLoop();
 
