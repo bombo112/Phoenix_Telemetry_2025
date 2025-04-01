@@ -5,23 +5,26 @@ int RocketLoop()
 {   
     canbusInit();
     logging logger;
-    message radioMelling;
 
-    
-    bool KlarForSending = 1;
+    bool ReadyToSend = 0;
 
     //Main loop
     while(true)
     {
         processCanbusMessageRx();
+        processCanbusMessageTx();
         canFrame nextCanFrame;
         if (retriveNextCanFrame(nextCanFrame))
         {
-            if(radioMelling.CanToMessage(nextCanFrame))
-            {
-                radioMelling.send();
-                radioMelling.length = 0;
-            }
+            CanToMessageFifo(nextCanFrame);
+        }
+        if(ReadyToSend){
+            MessageFifoToSend();
+            ReadyToSend = 0;
+        }
+        else{
+            ReceiveToCanTxFifo();
+            ReadyToSend = 1;
         }
     }
 }

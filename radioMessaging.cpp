@@ -45,8 +45,8 @@ bool message::CanToMessage(canFrame can){
     memcpy(data+length, &can.id, sizeof(can.id));
     memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
     memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
-    length += CanIdLength + CanDeltaLength + CanDataLength;
-    if(length>(MaxMessageLength - CanIdLength - CanDeltaLength - CanDataLength)){
+    length += CanLength;
+    if(length>(MaxMessageLength - CanLength)){
         return 1;
     }
     else{
@@ -61,6 +61,6 @@ canFrame message::MessageToCan(void){
     memcpy(can.data, data+length-CanDataLength, CanDataLength);
     memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
     memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);
-    length -= (CanIdLength +CanDeltaLength+ CanDataLength);
+    length -= CanLength;
     return can;
 }

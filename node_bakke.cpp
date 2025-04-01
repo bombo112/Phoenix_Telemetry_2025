@@ -6,21 +6,18 @@ int GroundLoop()
 {
     serialInit();
     
-    
-    message mota;
-    canFrame MotatCan;
+    bool ReadyToSend = 1;
+
     while(1)
     {
-        if(LoRa.parsePacket() != 0){
-            mota.receive();
-            int NumberOfCan = mota.length/(CanIdLength + CanDeltaLength + CanDataLength);
-            canFrame CanMessages[NumberOfCan];
-            for (int i = NumberOfCan-1; i > -1; i--){
-                CanMessages[i] = mota.MessageToCan();
-            }
-            for (int i = 0; i < NumberOfCan; i++){
-                CanMessages[i].print();
-            }   
+
+        if(ReadyToSend){
+            MessageFifoToSend();
+            ReadyToSend = 0;
+        }
+        else{
+            ReceiveToUsbTxFifo();
+            ReadyToSend = 1;
         }
     }
     return 0;
