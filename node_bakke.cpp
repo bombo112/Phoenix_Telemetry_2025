@@ -10,14 +10,14 @@ int GroundLoop()
 
     while(1)
     {
-
         if(ReadyToSend){
             MessageFifoToSend();
             ReadyToSend = 0;
         }
         else{
-            ReceiveToUsbTxFifo();
-            ReadyToSend = 1;
+            if(ReceiveToUsbTxFifo()){
+                ReadyToSend = 1;
+            }
         }
     }
     return 0;

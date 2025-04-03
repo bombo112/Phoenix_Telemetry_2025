@@ -11,8 +11,8 @@ inline std::queue<message> MessageFIFO;
 void MessageToMessageFifo(message message);
 void CanToMessageFifo(canFrame can);
 void MessageFifoToSend(void);
-void ReceiveToUsbTxFifo(void);
-void ReceiveToCanTxFifo(void);
+bool ReceiveToUsbTxFifo(void);
+bool ReceiveToCanTxFifo(void);
 
 
 

@@ -24,14 +24,14 @@ void MessageFifoToSend(void){
         canFrame NothingToSend;
         NothingToSend.id = NothingToSendId;
         NothingToSend.delta = 0; //legg til 
-        memcpy(NothingToSend.data, &NothingToSendId, sizeof(NothingToSendId));
+        memcpy(NothingToSend.data, NothingToSendData, sizeof(NothingToSendData));
         RadioMessage.CanToMessage(NothingToSend);
         RadioMessage.send();
     }
 }
 
-void ReceiveToUsbTxFifo(void){
-    if(LoRa.parsePacket() == 0){return;}
+bool ReceiveToUsbTxFifo(void){
+    if(LoRa.parsePacket() == 0){return 0;}
     message ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
     int NumberOfCan = ReceiveRadioMessage.length/(CanIdLength + CanDeltaLength + CanDataLength);
@@ -43,12 +43,13 @@ void ReceiveToUsbTxFifo(void){
         CanMessages[i].print();//for tesating
         //legg inn Usb fifo
     }
+    return 1;
 }
 
 
-void ReceiveToCanTxFifo(void){
+bool ReceiveToCanTxFifo(void){
     message ReceiveRadioMessage;
-    if(LoRa.parsePacket() == 0){return;}
+    if(LoRa.parsePacket() == 0){return 0;}
     ReceiveRadioMessage.receive();
     int NumberOfCan = ReceiveRadioMessage.length/(CanIdLength + CanDeltaLength + CanDataLength);
     canFrame CanMessages[NumberOfCan];
@@ -59,4 +60,5 @@ void ReceiveToCanTxFifo(void){
         CanMessages[i].print();//for tesating
         sendCanFrame(CanMessages[i]);//sender til fifo
     }
+    return 1;
 }

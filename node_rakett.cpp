@@ -23,8 +23,9 @@ int RocketLoop()
             ReadyToSend = 0;
         }
         else{
-            ReceiveToCanTxFifo();
-            ReadyToSend = 1;
+            if(ReceiveToCanTxFifo()){
+                ReadyToSend = 1;
+            }
         }
     }
 }
