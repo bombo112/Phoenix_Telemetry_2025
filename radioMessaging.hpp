@@ -13,6 +13,7 @@ static constexpr uint8_t CanDeltaLength = sizeof(CanSizeMessurment.delta);
 static constexpr uint8_t CanDataLength = sizeof(CanSizeMessurment.data);
 static constexpr uint8_t CanLength = CanIdLength + CanDeltaLength + CanDataLength;
 static constexpr uint8_t MaxMessageLength = 252;
+static constexpr uint8_t MaxNumberOfCan = MaxMessageLength/CanLength;
 
 class message {
     private:

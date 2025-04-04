@@ -10,12 +10,13 @@ int GroundLoop()
 
     while(1)
     {
+        printf("Bakkenode\n");
         if(ReadyToSend){
-            MessageFifoToSend();
+            SerialRxFifoToSend();
             ReadyToSend = 0;
         }
         else{
-            if(ReceiveToUsbTxFifo()){
+            if(ReceiveToSerialTxFifo()){
                 ReadyToSend = 1;
             }
         }

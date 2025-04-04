@@ -13,7 +13,7 @@ message::~message() {
 
 void message::send(void){
     LoRa.beginPacket();                       
-    LoRa.write(length);;       
+    LoRa.write(length);       
     LoRa.write(data, length);               
     LoRa.endPacket(); 
 }

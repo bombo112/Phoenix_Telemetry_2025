@@ -13,13 +13,9 @@ int RocketLoop()
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
-        canFrame nextCanFrame;
-        if (retriveNextCanFrame(nextCanFrame))
-        {
-            CanToMessageFifo(nextCanFrame);
-        }
+       printf("Rakettnode\n");
         if(ReadyToSend){
-            MessageFifoToSend();
+            CanRxFifoToSend();
             ReadyToSend = 0;
         }
         else{
