@@ -1,9 +1,6 @@
 #include "serial.hpp"
 
 
-
-
-
 void serialInit()
 {
     stdio_set_chars_available_callback(serialReadHandler, NULL);
@@ -42,16 +39,6 @@ void serialReadHandler(void* param) {
     }
 }
 
-bool retriveNextSerialFrame(canFrame &frameToBeRecieved)
-{
-    if(!serialRxfifo.empty())
-    {
-        frameToBeRecieved = serialRxfifo.front();
-        serialRxfifo.pop();
-        return true;
-    }
-    else {return false;}
-}
 
 
 
@@ -68,4 +55,30 @@ std::vector<std::string> split(const std::string &s, const char delimiter)
     }
     tokens.push_back(s.substr(start));
     return tokens;
+}
+
+
+void sendFrameToSerial(canFrame frameToBeSent)
+{
+    if (serialTxfifo.size() >= MaxBufferSize) 
+    {
+        serialTxfifo.pop();
+    }
+    serialTxfifo.push(frameToBeSent);
+}
+
+
+canFrame retrieveFrameFromSerial()
+{
+    canFrame frameToBeRecieved;
+    if(!serialRxfifo.empty())
+    {
+        frameToBeRecieved = serialRxfifo.front();
+        serialRxfifo.pop();
+        return frameToBeRecieved;
+    }
+    else
+    {
+        return frameToBeRecieved;
+    }
 }
