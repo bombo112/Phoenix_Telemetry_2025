@@ -8,15 +8,15 @@ int RocketLoop()
 
     bool ReadyToSend = 0;
 
-    //Main loop
     while(true)
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
-       printf("Rakettnode\n");
+        printf("Rakettnode\n");
         if(ReadyToSend){
             CanRxFifoToSend();
             ReadyToSend = 0;
+            //sleep_us(100);
         }
         else{
             if(ReceiveToCanTxFifo()){

@@ -1,5 +1,5 @@
 #include "radioMessaging.hpp"
-#include <queue>
+//#include <queue>
 #include "serial.hpp"
 
 
@@ -8,7 +8,7 @@
 
 //inline message radioMessage;
 
-inline std::queue<message> MessageFIFO;
+//inline std::queue<message> MessageFIFO;
 
 //void MessageToMessageFifo(message message);
 //void CanToMessageFifo(canFrame can);

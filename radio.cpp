@@ -35,10 +35,8 @@ void MessageFifoToSend(void){
 void CanRxFifoToSend(void){
     message OutgoingRadioMessage;
     if(canRxfifo.size()>=MaxNumberOfCan){
-        canFrame nextCanFrame; // spør jens for å fjerne denne
         for (int i = 0; i < MaxNumberOfCan; i++){
-            retriveNextCanFrame(nextCanFrame);
-            OutgoingRadioMessage.CanToMessage(nextCanFrame);
+            OutgoingRadioMessage.CanToMessage(retrieveFrameFromCan());
         }
         OutgoingRadioMessage.send();
     }
@@ -56,10 +54,8 @@ void CanRxFifoToSend(void){
 void SerialRxFifoToSend(void){
     message OutgoingRadioMessage;
     if(serialRxfifo.size()>=MaxNumberOfCan){
-        canFrame nextCanFrame; // spør jens for å fjerne denne
         for (int i = 0; i < MaxNumberOfCan; i++){
-            retriveNextSerialFrame(nextCanFrame);
-            OutgoingRadioMessage.CanToMessage(nextCanFrame);
+            OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
         }
         OutgoingRadioMessage.send();
     }
@@ -85,7 +81,7 @@ bool ReceiveToSerialTxFifo(void){
     }
     for (int i = 0; i < NumberOfCan; i++){
         CanMessages[i].print();//for tesating
-        //appendNextSerialFrame(CanMessages[i]);//sender til fifo
+        sendFrameToSerial(CanMessages[i]);//sender til fifo
     }
     return 1;
 }
@@ -103,7 +99,7 @@ bool ReceiveToCanTxFifo(void){
     }
     for (int i = 0; i < NumberOfCan; i++){ 
         CanMessages[i].print();//for tesating
-        sendCanFrame(CanMessages[i]);//sender til fifo
+        sendFrameToCan(CanMessages[i]);//sender til fifo
     }
 
     return 1;
