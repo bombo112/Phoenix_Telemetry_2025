@@ -92,23 +92,30 @@ bool processCanbusMessageTx()
 }
 
 
-bool retriveNextCanFrame(canFrame &frameToBeRecieved)
+
+void sendFrameToCan(canFrame frameToBeSent)
 {
+    if (canTxfifo.size() >= MaxBufferSize) 
+    {
+        canTxfifo.pop();
+    }
+    canTxfifo.push(frameToBeSent);
+}
+
+
+canFrame retrieveFrameFromCan()
+{
+    canFrame frameToBeRecieved;
     if(!canRxfifo.empty())
     {
         frameToBeRecieved = canRxfifo.front();
         canRxfifo.pop();
-        return true;
+        return frameToBeRecieved;
     }
-    else {return false;}
-}
-
-
-bool sendCanFrame(canFrame &frameToBeSent)
-{
-    if (canTxfifo.size() >= MaxBufferSize)  {canTxfifo.pop();}
-    canTxfifo.push(frameToBeSent);
-    return true;
+    else
+    {
+        return frameToBeRecieved;
+    }
 }
 
 
@@ -119,4 +126,26 @@ bool loopbackCanFrame(canFrame &frameToBeSent)
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRxfifo.push(frameToBeSent);
     return true;
+}
+
+
+uint16_t deltaTime()
+{
+    absolute_time_t picoTime = get_absolute_time();
+    uint64_t picoUs = to_us_since_boot(picoTime);
+
+    uint16_t delta = picoUs + syncTimeReference;
+    return delta;
+}
+
+
+void syncTime(canFrame canFrameTime)
+{
+
+    uint64_t gpsTime;
+
+    absolute_time_t picoTime = get_absolute_time();
+    uint64_t picoUs = to_us_since_boot(picoTime);
+    
+    syncTimeReference = picoUs - gpsTime;
 }
