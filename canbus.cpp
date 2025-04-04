@@ -51,8 +51,8 @@ void canbusInit()
     gpio_put(Pin_Can_RESET , 1);
     sleep_ms(2);
     
-    if (canbus.reset() != MCP2515::ERROR_OK)                                {while (true){printf("CAN reset failed!\n");}}
-    if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {while (true){printf("Setting bitrate failed!\n");}}
+    if (canbus.reset() != MCP2515::ERROR_OK)                                {printf("CAN reset failed!\n");         rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
+    if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {printf("Setting bitrate failed!\n");   rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
     canbus.setNormalMode();
 }
 

@@ -3,6 +3,8 @@
 #include "mcp2515.h"
 #include "Settings.hpp"
 #include "pico/time.h"
+#include "pico/bootrom.h"
+#include "pico/bootrom_constants.h"
 
 #ifndef CANBUS_HPP
 #define CANBUS_HPP
