@@ -3,26 +3,35 @@
 
 int GroundLoop()
 {
-    serialInit();
+    //serialInit();
     
     bool ReadyToSend = 1;
-    int teller = 0;
+    int LoopsFromLastSend = 0;
+    int TellerMotatt = 0;
+    int TellerMistet = 0;
 
     while(true)
     {
-        printf("Bakkenode\n");
         if(ReadyToSend){
             SerialRxFifoToSend();
             ReadyToSend = 0;
-            //sleep_us(100);
-            teller++;
-            printf("Sendinger: %d\n",teller);
+            LoopsFromLastSend = 0;
         }
         else{
             if(ReceiveToSerialTxFifo()){
                 ReadyToSend = 1;
+                TellerMotatt++;
             }
         }
+
+        if(LoopsFromLastSend>200){
+            ReadyToSend = 1;
+            TellerMistet++;
+        }
+        printf("TellerMotatt: %d\n",TellerMotatt);
+        printf("TellerMistet: %d\n",TellerMistet);
+        printf("LoopsFromLastSend: %d\n",LoopsFromLastSend);
+        LoopsFromLastSend++;
     }
     return 0;
 }
