@@ -27,6 +27,8 @@ void message::receive(void){
     rssi = LoRa.packetRssi();
     snr = LoRa.packetSnr();
     memcpy(data, DATA, length);
+    //printf("rssi: %d\n",rssi);
+    //printf("snr: %d\n",snr);
 }
 
 void message::print(void){
@@ -46,7 +48,7 @@ bool message::CanToMessage(canFrame can){
     memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
     memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
     length += CanLength;
-    if(length>(MaxMessageLength - CanLength)){
+    if(length>=(MaxMessageLength - CanLength)){
         return 1;
     }
     else{
@@ -55,9 +57,7 @@ bool message::CanToMessage(canFrame can){
 }
 
 canFrame message::MessageToCan(void){
-    int id;
     canFrame can;
-    can.id = 399;
     memcpy(can.data, data+length-CanDataLength, CanDataLength);
     memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
     memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);

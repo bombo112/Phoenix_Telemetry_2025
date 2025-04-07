@@ -12,11 +12,9 @@ int RocketLoop()
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
-        printf("Rakettnode\n");
         if(ReadyToSend){
             CanRxFifoToSend();
             ReadyToSend = 0;
-            //sleep_us(100);
         }
         else{
             if(ReceiveToCanTxFifo()){

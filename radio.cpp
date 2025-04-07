@@ -34,7 +34,7 @@ void MessageFifoToSend(void){
 
 void CanRxFifoToSend(void){
     message OutgoingRadioMessage;
-    if(canRxfifo.size()>=MaxNumberOfCan){
+    if(canRxfifo.size()>MaxNumberOfCan){
         for (int i = 0; i < MaxNumberOfCan; i++){
             OutgoingRadioMessage.CanToMessage(retrieveFrameFromCan());
         }
@@ -53,7 +53,7 @@ void CanRxFifoToSend(void){
 
 void SerialRxFifoToSend(void){
     message OutgoingRadioMessage;
-    if(serialRxfifo.size()>=MaxNumberOfCan){
+    if(serialRxfifo.size()>MaxNumberOfCan){
         for (int i = 0; i < MaxNumberOfCan; i++){
             OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
         }
