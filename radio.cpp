@@ -33,6 +33,7 @@ void MessageFifoToSend(void){
 
 
 void CanRxFifoToSend(void){
+    sleep_us(20);
     message OutgoingRadioMessage;
     if(canRxfifo.size()>MaxNumberOfCan){
         for (int i = 0; i < MaxNumberOfCan; i++){
@@ -52,6 +53,7 @@ void CanRxFifoToSend(void){
 
 
 void SerialRxFifoToSend(void){
+    sleep_us(20);
     message OutgoingRadioMessage;
     if(serialRxfifo.size()>MaxNumberOfCan){
         for (int i = 0; i < MaxNumberOfCan; i++){
