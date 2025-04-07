@@ -51,8 +51,8 @@ void canbusInit()
     gpio_put(Pin_Can_RESET , 1);
     sleep_ms(2);
     
-    if (canbus.reset() != MCP2515::ERROR_OK)                                {while (true){printf("CAN reset failed!\n");}}
-    if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {while (true){printf("Setting bitrate failed!\n");}}
+    if (canbus.reset() != MCP2515::ERROR_OK)                                {printf("CAN reset failed!\n");         rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
+    if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {printf("Setting bitrate failed!\n");   rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
     canbus.setNormalMode();
 }
 
@@ -77,6 +77,7 @@ bool processCanbusMessageRx()
 
     if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
+    canRx.delta = deltaTime();
     canRxfifo.push(canRx);
     return true;
 }
@@ -90,7 +91,6 @@ bool processCanbusMessageTx()
     if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)                {return false;}
     return true;
 }
-
 
 
 void sendFrameToCan(canFrame frameToBeSent)
@@ -141,7 +141,7 @@ uint16_t deltaTime()
 
 void syncTime(canFrame canFrameTime)
 {
-
+    // husk dekoding av time sync melding
     uint64_t gpsTime;
 
     absolute_time_t picoTime = get_absolute_time();

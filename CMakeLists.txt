@@ -30,6 +30,8 @@ include(pico_sdk_import.cmake)
 
 project(Phoenix_Telemetry_2025 C CXX ASM)
 
+set(PICO_CXX_ENABLE_EXCEPTIONS 1)
+
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
