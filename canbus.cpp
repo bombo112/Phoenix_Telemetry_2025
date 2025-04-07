@@ -77,6 +77,7 @@ bool processCanbusMessageRx()
 
     if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
+    canRx.delta = deltaTime();
     canRxfifo.push(canRx);
     return true;
 }
@@ -90,7 +91,6 @@ bool processCanbusMessageTx()
     if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)                {return false;}
     return true;
 }
-
 
 
 void sendFrameToCan(canFrame frameToBeSent)
@@ -141,7 +141,7 @@ uint16_t deltaTime()
 
 void syncTime(canFrame canFrameTime)
 {
-
+    // husk dekoding av time sync melding
     uint64_t gpsTime;
 
     absolute_time_t picoTime = get_absolute_time();
