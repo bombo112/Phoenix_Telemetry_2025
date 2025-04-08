@@ -119,13 +119,12 @@ canFrame retrieveFrameFromCan()
 }
 
 
-bool loopbackCanFrame(canFrame &frameToBeSent)
+void loopbackCanFrame(canFrame &frameToBeSent)
 {
     if (canTxfifo.size() >= MaxBufferSize)                      {canTxfifo.pop();}
     canTxfifo.push(frameToBeSent);
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRxfifo.push(frameToBeSent);
-    return true;
 }
 
 
