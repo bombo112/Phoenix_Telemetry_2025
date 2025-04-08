@@ -3,7 +3,7 @@
 
 int GroundLoop()
 {
-    //serialInit();
+    serialInit();
     
     bool ReadyToSend = 1;
     int LoopsFromLastSend = 0;
