@@ -12,9 +12,9 @@ int GroundLoop()
 
     while(true)
     {
-        processSerialMessageTx();
+        //processSerialMessageTx();
         if(ReadyToSend){
-            SerialRxFifoToSend();
+            MessageFifoToSend();
             ReadyToSend = 0;
             LoopsFromLastSend = 0;
         }

@@ -18,7 +18,8 @@ static constexpr uint8_t MaxNumberOfCan = MaxMessageLength/CanLength;
 
 class message {
     private:
-        uint8_t *data;
+        //uint8_t *data;
+        uint8_t data[MaxMessageLength];
         int rssi;
         float snr;
     public:

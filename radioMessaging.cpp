@@ -2,13 +2,13 @@
 
 message::message(){
     // Allocate memory for data
-    data = new uint8_t[MaxMessageLength];
+    //data = new uint8_t[MaxMessageLength];
     length = 0;
 }
 
 // Destructor: free the allocated memory
 message::~message() {
-    delete[] data;
+    //delete[] data;
 }
 
 

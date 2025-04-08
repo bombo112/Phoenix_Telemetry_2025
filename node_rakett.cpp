@@ -11,11 +11,21 @@ int RocketLoop()
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
+        
+        if(ReadyToSend)                 {
+            MessageFifoToSend();
+            ReadyToSend = 0;
+        }
+        else if(ReceiveToCanTxFifo())   {
+            ReadyToSend = 1;
+        }
 
-        if(ReadyToSend)                 {CanRxFifoToSend(); ReadyToSend = 0;}
-        else if(ReceiveToCanTxFifo())   {ReadyToSend = 1;}
 
-        if (timeToLogRocketModule())    {logger.reportRocket();}
+
+
+
+
+        //if (timeToLogRocketModule())    {logger.reportRocket();}
     }
 }
 
