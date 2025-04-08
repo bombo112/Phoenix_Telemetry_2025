@@ -25,6 +25,11 @@ void Logger::reportRocket()
     messageCounters.id  = 302;
     buffers.id          = 303;
 
+    status.delta           = deltaTime();
+    signalQuality.delta    = deltaTime();
+    messageCounters.delta  = deltaTime();
+    buffers.delta          = deltaTime();
+
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
     constexpr size_t BYTES_F32 = sizeof(float);
@@ -48,11 +53,8 @@ void Logger::reportRocket()
     loopbackCanFrame(buffers);
     loopbackCanFrame(buffers);
 
-
-
     SNR = 0;
     RSSI = 0;
-
 }
 
 
@@ -73,6 +75,11 @@ void Logger::reportGround()
     messageCounters.id  = 302+20;
     buffers.id          = 303+20;
 
+    status.delta           = deltaTime();
+    signalQuality.delta    = deltaTime();
+    messageCounters.delta  = deltaTime();
+    buffers.delta          = deltaTime();
+
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
     constexpr size_t BYTES_F32 = sizeof(float);
@@ -90,13 +97,11 @@ void Logger::reportGround()
     memcpy(&signalQuality.data[0], &SNR,  BYTES_F32);
     memcpy(&signalQuality.data[4], &RSSI, BYTES_F32);
 
-    loopbackCanFrame(status);
-    loopbackCanFrame(signalQuality);
-    loopbackCanFrame(messageCounters);
-    loopbackCanFrame(buffers);
-    loopbackCanFrame(buffers);
-
-
+    sendFrameToSerial(status);
+    sendFrameToSerial(signalQuality);
+    sendFrameToSerial(messageCounters);
+    sendFrameToSerial(buffers);
+    sendFrameToSerial(buffers);
 
     SNR = 0;
     RSSI = 0;

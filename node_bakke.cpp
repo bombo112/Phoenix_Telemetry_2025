@@ -10,8 +10,6 @@ int GroundLoop()
     int TellerMotatt = 0;
     int TellerMistet = 0;
 
-    absolute_time_t lastLoggingTime = get_absolute_time();
-
     while(true)
     {
         if(ReadyToSend){
@@ -36,10 +34,15 @@ int GroundLoop()
         LoopsFromLastSend++;
 
 
-        if (absolute_time_diff_us(lastLoggingTime, get_absolute_time()) >= loggingInterval)
-        {
-            logger.reportGround();
-        }
+        if (timeToLogGroundModule())    {logger.reportGround();}
     }
     return 0;
+}
+
+
+
+inline bool timeToLogGroundModule()
+{
+    static absolute_time_t lastLoggingTime = get_absolute_time();
+    return (absolute_time_diff_us(lastLoggingTime, get_absolute_time()) >= loggingInterval);
 }

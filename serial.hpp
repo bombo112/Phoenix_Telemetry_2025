@@ -12,8 +12,8 @@ inline std::queue<canFrame> serialRxfifo;
 inline std::queue<canFrame> serialTxfifo;
 
 
-void serialReadHandler(void *param);
-void serialWriteHandler();
+void processSerialMessageRx(void *param);
+void processSerialMessageTx();
 std::vector<std::string> split(const std::string &s, const char delimiter);
 
 void serialInit();

@@ -3,11 +3,12 @@
 
 void serialInit()
 {
-    stdio_set_chars_available_callback(serialReadHandler, NULL);
+    stdio_set_chars_available_callback(processSerialMessageRx, NULL);
 }
 
 
-void serialReadHandler(void* param) {
+void processSerialMessageRx(void* param)
+{
     (void)param; // dump parameter
 
     int32_t receivedCharacter;
@@ -25,21 +26,39 @@ void serialReadHandler(void* param) {
                 inputStringSerial.clear();
                 continue;
             }
-            canFrame NewCan;
-            NewCan.id = stoi(sentenceParts[0], 0, 10);
+            canFrame frame;
+            frame.id = stoi(sentenceParts[0], 0, 10);
         
-            for (size_t i = 1; i < sentenceParts.size(); i++)   {NewCan.data[i-1] = stoi(sentenceParts[i], 0, 10);}
+            for (size_t i = 1; i < sentenceParts.size(); i++)   {frame.data[i-1] = stoi(sentenceParts[i], 0, 10);}
             if (serialRxfifo.size() >= MaxBufferSize) {serialRxfifo.pop();}
 
-            serialRxfifo.push(NewCan);
+            serialRxfifo.push(frame);
             inputStringSerial.clear();
-            NewCan.print();
+            frame.print();
             continue;
         }
     }
 }
 
 
+void processSerialMessageTx()
+{
+    while (!serialTxfifo.empty())
+    {
+        canFrame frame = serialTxfifo.front(); serialTxfifo.pop();
+        printf("%d,%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+            frame.id,
+            frame.delta, 
+            frame.data[0], 
+            frame.data[1], 
+            frame.data[2], 
+            frame.data[3], 
+            frame.data[4], 
+            frame.data[5], 
+            frame.data[6], 
+            frame.data[7]);
+    }
+}
 
 
 std::vector<std::string> split(const std::string &s, const char delimiter)
