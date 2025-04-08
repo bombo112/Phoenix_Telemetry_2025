@@ -44,7 +44,7 @@ void CanRxFifoToSend(void){
     else{
         canFrame NothingToSend;
         NothingToSend.id = NothingToSendId;
-        NothingToSend.delta = 0; //legg til 
+        NothingToSend.delta = deltaTime(); //legg til 
         memcpy(NothingToSend.data, NothingToSendData, sizeof(NothingToSendData));
         OutgoingRadioMessage.CanToMessage(NothingToSend);
         OutgoingRadioMessage.send();
@@ -64,7 +64,7 @@ void SerialRxFifoToSend(void){
     else{
         canFrame NothingToSend;
         NothingToSend.id = NothingToSendId;
-        NothingToSend.delta = 0; //legg til 
+        NothingToSend.delta = deltaTime(); //legg til 
         memcpy(NothingToSend.data, NothingToSendData, sizeof(NothingToSendData));
         OutgoingRadioMessage.CanToMessage(NothingToSend);
         OutgoingRadioMessage.send();
