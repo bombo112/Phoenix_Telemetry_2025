@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "LoRa-RP2040.h"
 #include "Settings.hpp"
+#include "logging.hpp"
 
 #ifndef MESSAGE_H
 #define MESSAGE_H

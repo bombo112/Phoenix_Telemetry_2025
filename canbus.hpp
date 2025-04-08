@@ -33,7 +33,7 @@ bool IDisOfInterest(const canFrame incoming);
 
 void sendFrameToCan(canFrame frameToBeSent);
 canFrame retrieveFrameFromCan();
-bool loopbackCanFrame(canFrame &frameToBeSent);        // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
+void loopbackCanFrame(canFrame &frameToBeSent);     // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
 
 void canbusInit();
 

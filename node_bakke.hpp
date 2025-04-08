@@ -8,5 +8,6 @@
 #define NODE_BAKKE_HPP
 
 int GroundLoop();
+inline bool timeToLogGroundModule();
 
 #endif

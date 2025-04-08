@@ -1,12 +1,11 @@
 #include "canbus.hpp"
 
 
-
-
 void canFrame::print()
 {
     printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, delta, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 }
+
 
 canFrame::canFrame(can_frame frameToConvert)
 {
@@ -46,7 +45,7 @@ void canbusInit()
     gpio_set_dir(Pin_Can_STBY, GPIO_IN);
     gpio_pull_down(Pin_Can_STBY);
 
-    gpio_put(Pin_Can_RESET , 0);            //hardware reset mcp2515
+    gpio_put(Pin_Can_RESET , 0);            //hardware reset mcp25625
     sleep_ms(100);
     gpio_put(Pin_Can_RESET , 1);
     sleep_ms(2);
@@ -55,6 +54,7 @@ void canbusInit()
     if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {printf("Setting bitrate failed!\n");   rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
     canbus.setNormalMode();
 }
+
 
 bool IDisOfInterest(const canFrame incoming)
 {
@@ -85,10 +85,10 @@ bool processCanbusMessageRx()
 
 bool processCanbusMessageTx()
 {
-    if (canTxfifo.empty())                                              {return false;}
-    canFrame canTx = canTxfifo.front();                                 canTxfifo.pop();
+    if (canTxfifo.empty())                                      {return false;}
+    canFrame canTx = canTxfifo.front();                         canTxfifo.pop();
     can_frame cantx = canTx.convert();
-    if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)                {return false;}
+    if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)        {return false;}
     return true;
 }
 
@@ -119,13 +119,12 @@ canFrame retrieveFrameFromCan()
 }
 
 
-bool loopbackCanFrame(canFrame &frameToBeSent)
+void loopbackCanFrame(canFrame &frameToBeSent)
 {
     if (canTxfifo.size() >= MaxBufferSize)                      {canTxfifo.pop();}
     canTxfifo.push(frameToBeSent);
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRxfifo.push(frameToBeSent);
-    return true;
 }
 
 

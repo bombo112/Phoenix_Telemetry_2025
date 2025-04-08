@@ -11,25 +11,32 @@ message::~message() {
     delete[] data;
 }
 
+
 void message::send(void){
-    LoRa.beginPacket();                       
-    LoRa.write(length);       
-    LoRa.write(data, length);               
-    LoRa.endPacket(); 
+    LoRa.beginPacket();
+    LoRa.write(length);
+    LoRa.write(data, length);
+    LoRa.endPacket();
 }
 
+
 void message::receive(void){
-    length = LoRa.read(); 
+    length = LoRa.read();
     uint8_t DATA[length];
     for(int i=0; i< length; i++) {
         DATA[i] = LoRa.read();
     }
     rssi = LoRa.packetRssi();
     snr = LoRa.packetSnr();
+
+    logger.logRSSI(rssi);                  //logge funksjon -jens
+    logger.logSNR(snr);                    //logge funksjon -jens
+
     memcpy(data, DATA, length);
     //printf("rssi: %d\n",rssi);
     //printf("snr: %d\n",snr);
 }
+
 
 void message::print(void){
     printf("Message length: %d\n", length);
@@ -55,6 +62,7 @@ bool message::CanToMessage(canFrame can){
         return 0;
     }
 }
+
 
 canFrame message::MessageToCan(void){
     canFrame can;

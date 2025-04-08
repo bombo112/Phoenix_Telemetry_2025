@@ -7,5 +7,6 @@
 #define NODE_RAKETT_HPP
 
 int RocketLoop();
+inline bool timeToLogRocketModule();
 
 #endif
