@@ -5,17 +5,27 @@ int RocketLoop()
 {   
     canbusInit();
 
-    bool ReadyToSend = 0;
+    bool ReadyToSend = false;
 
     while(true)
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
+        
+        if(ReadyToSend)                 {
+            MessageFifoToSend();
+            ReadyToSend = false;
+        }
+        else if(ReceiveToCanTxFifo())   {
+            ReadyToSend = true;
+        }
 
-        if(ReadyToSend)                 {CanRxFifoToSend(); ReadyToSend = 0;}
-        else if(ReceiveToCanTxFifo())   {ReadyToSend = 1;}
 
-        if (timeToLogRocketModule())    {logger.reportRocket();}
+
+
+
+
+        //if (timeToLogRocketModule())    {logger.reportRocket();}
     }
 }
 

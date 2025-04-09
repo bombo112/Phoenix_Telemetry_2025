@@ -2,13 +2,13 @@
 
 message::message(){
     // Allocate memory for data
-    data = new uint8_t[MaxMessageLength];
+    //data = new uint8_t[MaxMessageLength];
     length = 0;
 }
 
 // Destructor: free the allocated memory
 message::~message() {
-    delete[] data;
+    //delete[] data;
 }
 
 
@@ -22,10 +22,9 @@ void message::send(void){
 
 void message::receive(void){
     length = LoRa.read();
-    uint8_t DATA[length];
-    for(int i=0; i< length; i++) {
-        DATA[i] = LoRa.read();
-    }
+    uint8_t DATA[length]; //prøv å skriv direkte til data utenom å skrive til mellomledded DATA
+    for(int i=0; i< length; i++)    {DATA[i] = LoRa.read();}
+
     rssi = LoRa.packetRssi();
     snr = LoRa.packetSnr();
 
@@ -33,12 +32,10 @@ void message::receive(void){
     logger.logSNR(snr);                    //logge funksjon -jens
 
     memcpy(data, DATA, length);
-    //printf("rssi: %d\n",rssi);
-    //printf("snr: %d\n",snr);
 }
 
 
-void message::print(void){
+void message::print(void){          //debug print
     printf("Message length: %d\n", length);
     printf("Message: ");
     for(int i=0; i< length; i++){
@@ -51,16 +48,13 @@ void message::print(void){
 
 
 bool message::CanToMessage(canFrame can){
+    //lag alias for length til å bety noe med can størrelse
     memcpy(data+length, &can.id, sizeof(can.id));
     memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
     memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
     length += CanLength;
-    if(length>=(MaxMessageLength - CanLength)){
-        return 1;
-    }
-    else{
-        return 0;
-    }
+    if(length>=(MaxMessageLength - CanLength))  {return 1;}  //oppdater navn med length som endrer navn
+    return 0;
 }
 
 

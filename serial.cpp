@@ -7,14 +7,14 @@ void serialInit()
 }
 
 
-void processSerialMessageRx(void* param)
+void processSerialMessageRx(void* param)//må skru av interupts
 {
     (void)param; // dump parameter
 
     int32_t receivedCharacter;
     while ((receivedCharacter = stdio_getchar_timeout_us(0)) != PICO_ERROR_TIMEOUT)
     {   
-        putchar_raw(receivedCharacter);
+        putchar_raw(receivedCharacter);//debug
         if (receivedCharacter != '\n' && receivedCharacter != '\r')
         {
             inputStringSerial.push_back(static_cast<char>(receivedCharacter));
@@ -34,7 +34,7 @@ void processSerialMessageRx(void* param)
 
             serialRxfifo.push(frame);
             inputStringSerial.clear();
-            frame.print();
+            frame.print(); //debug
             continue;
         }
     }

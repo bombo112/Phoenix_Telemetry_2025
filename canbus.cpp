@@ -50,7 +50,7 @@ void canbusInit()
     gpio_put(Pin_Can_RESET , 1);
     sleep_ms(2);
     
-    if (canbus.reset() != MCP2515::ERROR_OK)                                {printf("CAN reset failed!\n");         rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
+    if (canbus.reset() != MCP2515::ERROR_OK)                                {printf("CAN reset failed!\n");         rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}//lag reset funksjon og vent på watchdog
     if (canbus.setBitrate(CAN_1000KBPS, MCP_20MHZ) != MCP2515::ERROR_OK)    {printf("Setting bitrate failed!\n");   rom_reboot(BOOT_TYPE_NORMAL, 10, 0, 0);}
     canbus.setNormalMode();
 }
@@ -128,7 +128,7 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 }
 
 
-uint16_t deltaTime()
+uint16_t deltaTime()//skriv om til å være nåværende pico tid minus pico tid når vi fikk gpsrefsync
 {
     absolute_time_t picoTime = get_absolute_time();
     uint64_t picoUs = to_us_since_boot(picoTime);
