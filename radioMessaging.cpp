@@ -1,44 +1,35 @@
 #include "radioMessaging.hpp"
 
-message::message(){
-    // Allocate memory for data
-    //data = new uint8_t[MaxMessageLength];
-    length = 0;
-}
 
-// Destructor: free the allocated memory
-message::~message() {
-    //delete[] data;
-}
+RadioPackage::RadioPackage(){NumberOfBytes = 0;}
 
 
-void message::send(void){
+RadioPackage::~RadioPackage(){}
+
+
+void RadioPackage::send(void){
     LoRa.beginPacket();
-    LoRa.write(length);
-    LoRa.write(data, length);
+    LoRa.write(NumberOfBytes);
+    LoRa.write(data, NumberOfBytes);
     LoRa.endPacket();
 }
 
 
-void message::receive(void){
-    length = LoRa.read();
-    uint8_t DATA[length]; //prøv å skriv direkte til data utenom å skrive til mellomledded DATA
-    for(int i=0; i< length; i++)    {DATA[i] = LoRa.read();}
-
+void RadioPackage::receive(void){
+    NumberOfBytes = LoRa.read();
+    for(int i=0; i< NumberOfBytes; i++)    {data[i] = LoRa.read();}
     rssi = LoRa.packetRssi();
     snr = LoRa.packetSnr();
 
     logger.logRSSI(rssi);                  //logge funksjon -jens
     logger.logSNR(snr);                    //logge funksjon -jens
-
-    memcpy(data, DATA, length);
 }
 
 
-void message::print(void){          //debug print
-    printf("Message length: %d\n", length);
+void RadioPackage::print(void){          //debug print
+    printf("Message length: %d\n", NumberOfBytes);
     printf("Message: ");
-    for(int i=0; i< length; i++){
+    for(int i=0; i< NumberOfBytes; i++){
         printf("%d ",data[i]);
     }
     printf("\n");
@@ -47,22 +38,20 @@ void message::print(void){          //debug print
 }
 
 
-bool message::CanToMessage(canFrame can){
-    //lag alias for length til å bety noe med can størrelse
-    memcpy(data+length, &can.id, sizeof(can.id));
-    memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
-    memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
-    length += CanLength;
-    if(length>=(MaxMessageLength - CanLength))  {return 1;}  //oppdater navn med length som endrer navn
+bool RadioPackage::CanToMessage(canFrame can){
+    memcpy(data +NumberOfBytes, &can.id, CanIdSize);
+    memcpy(data +NumberOfBytes + CanIdSize, &can.delta, CanDeltaSize);
+    memcpy(data +NumberOfBytes + CanIdSize + CanDeltaSize, &can.data, CanDataSize);
+    NumberOfBytes += CanFrameSize;
+    if(NumberOfBytes>=(MaxNumberOfBytesForData - CanFrameSize))  {return 1;}
     return 0;
 }
 
 
-canFrame message::MessageToCan(void){
+canFrame RadioPackage::MessageToCan(int CanNumber){
     canFrame can;
-    memcpy(can.data, data+length-CanDataLength, CanDataLength);
-    memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
-    memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);
-    length -= CanLength;
+    memcpy(&can.id, data + (CanNumber*CanFrameSize), CanIdSize);
+    memcpy(&can.delta, data + (CanNumber*CanFrameSize) + CanIdSize, CanDeltaSize);
+    memcpy(&can.data, data + (CanNumber*CanFrameSize) + CanIdSize + CanDeltaSize, CanDataSize);
     return can;
 }

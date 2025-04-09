@@ -7,14 +7,14 @@ int GroundLoop()
     
     bool ReadyToSend = 1;
     int LoopsFromLastSend = 0;
-    int TellerMotatt = 0;
-    int TellerMistet = 0;
+    int TellerMotatt = 0; //for tesating
+    int TellerMistet = 0; //for tesating
 
     while(true)
     {
         //processSerialMessageTx();
         if(ReadyToSend){
-            MessageFifoToSend();
+            SerialRxFifoToSend();
             ReadyToSend = 0;
             LoopsFromLastSend = 0;
         }
@@ -29,9 +29,9 @@ int GroundLoop()
             TellerMistet++;
         }
 
-        printf("TellerMotatt: %d\n",TellerMotatt);
-        printf("TellerMistet: %d\n",TellerMistet);
-        printf("LoopsFromLastSend: %d\n",LoopsFromLastSend);
+        //printf("TellerMotatt: %d\n",TellerMotatt); //for tesating
+        //printf("TellerMistet: %d\n",TellerMistet); //for tesating
+        //printf("LoopsFromLastSend: %d\n",LoopsFromLastSend); //for tesating
         LoopsFromLastSend++;
 
 
