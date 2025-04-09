@@ -7,7 +7,7 @@
 #define RADIO_H
 
 
-inline std::queue<message> MessageFIFO;
+inline std::queue<message> MessageFIFO; //gjør ett ellerannet med fifo elller drop den og bruk can fifo
 
 
 void CanRxFifoToMessageFifo(void);

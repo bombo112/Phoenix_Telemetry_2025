@@ -5,7 +5,7 @@ int RocketLoop()
 {   
     canbusInit();
 
-    bool ReadyToSend = 0;
+    bool ReadyToSend = false;
 
     while(true)
     {
@@ -14,10 +14,10 @@ int RocketLoop()
         
         if(ReadyToSend)                 {
             MessageFifoToSend();
-            ReadyToSend = 0;
+            ReadyToSend = false;
         }
         else if(ReceiveToCanTxFifo())   {
-            ReadyToSend = 1;
+            ReadyToSend = true;
         }
 
 

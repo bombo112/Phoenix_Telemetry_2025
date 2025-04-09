@@ -45,7 +45,7 @@ int main()
   //=======ERROR=HANDDELING=======//
 
 
-  while (true)
+  while (true)//bytte ut med try catch
   {
     switch (error)
     {

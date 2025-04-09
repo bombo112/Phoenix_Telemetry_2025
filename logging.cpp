@@ -51,7 +51,6 @@ void Logger::reportRocket()
     loopbackCanFrame(signalQuality);
     loopbackCanFrame(messageCounters);
     loopbackCanFrame(buffers);
-    loopbackCanFrame(buffers);
 
     SNR = 0;
     RSSI = 0;
@@ -100,7 +99,6 @@ void Logger::reportGround()
     sendFrameToSerial(status);
     sendFrameToSerial(signalQuality);
     sendFrameToSerial(messageCounters);
-    sendFrameToSerial(buffers);
     sendFrameToSerial(buffers);
 
     SNR = 0;

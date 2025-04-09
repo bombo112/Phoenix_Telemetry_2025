@@ -32,11 +32,13 @@ private:
     float RSSI;                         // Recieved Signal Strength Indicator
     float SNR;                          // Signal to Noies Ratio
     uint16_t bufferMeasurements[BUFFER_COUNT];
-    uint32_t uplinkMessageCount;
-    uint32_t downlinkMessageCount;
     bool statusBits[STATUS_COUNT];
+    //legg til mistede og sånn
     
 public:
+    uint32_t uplinkMessageCount;
+    uint32_t downlinkMessageCount;
+
     inline void logSNR(float newReading)            {SNR  = std::max(newReading,  SNR);}
     inline void logRSSI(float newReading)           {RSSI = std::min(newReading, RSSI);}
     inline void iterateUplinkMessageCount(void)     {uplinkMessageCount++;}

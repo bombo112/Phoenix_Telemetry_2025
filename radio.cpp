@@ -26,7 +26,7 @@ void SerialRxFifoToMessageFifo(void){
 
 
 message MessageFifoToSend(void){
-    sleep_us(20);
+    sleep_us(20);   //beskriv hvorfor den er her i kommentar
     message OutgoingRadioMessage;
     if(!MessageFIFO.empty()){
         OutgoingRadioMessage = MessageFIFO.front(); 
@@ -34,7 +34,7 @@ message MessageFifoToSend(void){
         OutgoingRadioMessage.send();
     }
     else{
-        canFrame NothingToSend;
+        canFrame NothingToSend; //lag denne global så den ikke er gjenskapt hver syklus untatt av timestamp og indikator på at forrige pakke var mista elle noe sånt++
         NothingToSend.id = NothingToSendId;
         NothingToSend.delta = deltaTime();
         memcpy(NothingToSend.data, NothingToSendData, sizeof(NothingToSendData));
@@ -43,7 +43,7 @@ message MessageFifoToSend(void){
     }
     CanRxFifoToMessageFifo();
     SerialRxFifoToMessageFifo();
-    return OutgoingRadioMessage;
+    return OutgoingRadioMessage;    //husk å implementerer resend hvis pakke drop
 }
 
 /*
@@ -91,10 +91,10 @@ bool ReceiveToSerialTxFifo(void){
     if(LoRa.parsePacket() == 0){return 0;}
     message ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
-    int NumberOfCan = ReceiveRadioMessage.length/CanLength;
+    int NumberOfCan = ReceiveRadioMessage.length / CanLength;
     canFrame CanMessages[NumberOfCan];
     for (int i = NumberOfCan-1; i > -1; i--){
-        CanMessages[i] = ReceiveRadioMessage.MessageToCan();
+        CanMessages[i] = ReceiveRadioMessage.MessageToCan(); //implementer med i istedenfpor length på messageToCan()
     }
     for (int i = 0; i < NumberOfCan; i++){
         CanMessages[i].print();//for tesating
@@ -111,7 +111,7 @@ bool ReceiveToCanTxFifo(void){
     int NumberOfCan = ReceiveRadioMessage.length/CanLength;
     canFrame CanMessages[NumberOfCan];
     for (int i = NumberOfCan-1; i > -1; i--){
-        CanMessages[i] = ReceiveRadioMessage.MessageToCan();
+        CanMessages[i] = ReceiveRadioMessage.MessageToCan();    //implementer med i istedenfpor length på messageToCan()
     }
     for (int i = 0; i < NumberOfCan; i++){ 
         CanMessages[i].print();//for tesating
