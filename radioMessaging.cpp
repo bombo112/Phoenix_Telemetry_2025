@@ -13,22 +13,22 @@ data[0] = InternalTelemetryMessageId;
 data[1] = InternalTelemetryMessageId>>8;
 
 //Adds the Can timestamp
-uint64_t timestamp = deltaTime();
-for (size_t i = 0; i < CanDeltaSize; i++){
-    data[CanIdSize + i] = timestamp>>(i*8);
-}
+timeStamp InternalTelemetryMessageTime = getTimeStamp();
+data[CanIdSize + 0] = InternalTelemetryMessageTime.data[0];
+data[CanIdSize + 1] = InternalTelemetryMessageTime.data[1];
+data[CanIdSize + 2] = InternalTelemetryMessageTime.data[2];
 
 //Adds the Can data
 switch (type){
     case NothingToSend:
-        data[CanIdSize + CanDeltaSize  + 0] = 1;
-        data[CanIdSize + CanDeltaSize  + 1] = 1;
-        data[CanIdSize + CanDeltaSize  + 2] = 1;
-        data[CanIdSize + CanDeltaSize  + 3] = 1;
-        data[CanIdSize + CanDeltaSize  + 4] = 1;
-        data[CanIdSize + CanDeltaSize  + 5] = 1;
-        data[CanIdSize + CanDeltaSize  + 6] = 1;
-        data[CanIdSize + CanDeltaSize  + 7] = 1;
+        data[CanIdSize + CanTimeSize  + 0] = 1;
+        data[CanIdSize + CanTimeSize  + 1] = 1;
+        data[CanIdSize + CanTimeSize  + 2] = 1;
+        data[CanIdSize + CanTimeSize  + 3] = 1;
+        data[CanIdSize + CanTimeSize  + 4] = 1;
+        data[CanIdSize + CanTimeSize  + 5] = 1;
+        data[CanIdSize + CanTimeSize  + 6] = 1;
+        data[CanIdSize + CanTimeSize  + 7] = 1;
         break;
 
     default:
@@ -74,8 +74,8 @@ void RadioPackage::print(void){          //debug print
 
 bool RadioPackage::CanToMessage(canFrame can){
     memcpy(data +NumberOfBytes, &can.id, CanIdSize);
-    memcpy(data +NumberOfBytes + CanIdSize, &can.delta, CanDeltaSize);
-    memcpy(data +NumberOfBytes + CanIdSize + CanDeltaSize, &can.data, CanDataSize);
+    memcpy(data +NumberOfBytes + CanIdSize, &can.time, CanTimeSize);
+    memcpy(data +NumberOfBytes + CanIdSize + CanTimeSize, &can.data, CanDataSize);
     NumberOfBytes += CanFrameSize;
     if(NumberOfBytes>=(MaxNumberOfBytesForData - CanFrameSize))  {return 1;}
     return 0;
@@ -85,7 +85,7 @@ bool RadioPackage::CanToMessage(canFrame can){
 canFrame RadioPackage::MessageToCan(int CanNumber){
     canFrame can;
     memcpy(&can.id, data + (CanNumber*CanFrameSize), CanIdSize);
-    memcpy(&can.delta, data + (CanNumber*CanFrameSize) + CanIdSize, CanDeltaSize);
-    memcpy(&can.data, data + (CanNumber*CanFrameSize) + CanIdSize + CanDeltaSize, CanDataSize);
+    memcpy(&can.time, data + (CanNumber*CanFrameSize) + CanIdSize, CanTimeSize);
+    memcpy(&can.data, data + (CanNumber*CanFrameSize) + CanIdSize + CanTimeSize, CanDataSize);
     return can;
 }

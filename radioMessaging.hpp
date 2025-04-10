@@ -15,9 +15,9 @@ const uint8_t NothingToSend = 0;
 
 
 static constexpr uint8_t CanIdSize = sizeof(CanSizeMessurment.id);
-static constexpr uint8_t CanDeltaSize = sizeof(CanSizeMessurment.delta);
+static constexpr uint8_t CanTimeSize = sizeof(CanSizeMessurment.time);
 static constexpr uint8_t CanDataSize = sizeof(CanSizeMessurment.data);
-static constexpr uint8_t CanFrameSize = CanIdSize + CanDeltaSize + CanDataSize;
+static constexpr uint8_t CanFrameSize = CanIdSize + CanTimeSize + CanDataSize;
 static constexpr uint8_t MaxNumberOfBytesForData = 252;
 static constexpr uint8_t MaxNumberOfCanFrame = MaxNumberOfBytesForData/CanFrameSize;
 
