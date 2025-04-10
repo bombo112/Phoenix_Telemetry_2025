@@ -48,7 +48,7 @@ void processSerialMessageTx()
         canFrame frame = serialTxfifo.front(); serialTxfifo.pop();
         printf("%d,%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
             frame.id,
-            frame.time, 
+            parseTimeStamp(frame.time)/1000, 
             frame.data[0], 
             frame.data[1], 
             frame.data[2], 

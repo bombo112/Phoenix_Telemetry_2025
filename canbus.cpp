@@ -131,8 +131,8 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 
 void syncTime(canFrame gpsTimeFrame)
 {
-    absolute_time_t gpsTime = 0;                        //parse gps time can frame to micro seconds of the day
-    absolute_time_t picoTime = get_absolute_time();
+    uint64_t gpsTime = 0;                                       //parse gps time can frame to micro seconds of the day
+    uint64_t picoTime = to_us_since_boot(get_absolute_time());
 
     utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);
 }
@@ -140,13 +140,20 @@ void syncTime(canFrame gpsTimeFrame)
 
 
 
-
 timeStamp getTimeStamp()
 {
-    absolute_time_t picoTime = get_absolute_time();
-    absolute_time_t utcTime = picoTime + utcPicoDeltaTime;
+    uint64_t picoTime = to_us_since_boot(get_absolute_time());
+    uint64_t microseconds =  picoTime + utcPicoDeltaTime;
 
-    uint64_t utcTick = (usPerDay*utcTime)/usPerTick;
-    timeStamp stamp(utcTick);
+    uint64_t ticks = (microseconds * ticksPerDay) / usPerDay;
+    timeStamp stamp(ticks);
     return stamp;
+}
+
+
+uint64_t parseTimeStamp(timeStamp stamp)
+{
+    uint64_t ticks = stamp.toInt();
+    uint64_t microseconds = (ticks * usPerDay) / ticksPerDay;
+    return microseconds;
 }
