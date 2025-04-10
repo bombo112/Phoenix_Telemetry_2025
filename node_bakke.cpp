@@ -5,37 +5,36 @@ int GroundLoop()
 {
     serialInit();
     
-    bool ReadyToSend = 1;
+    bool ReadyToSend = true;
     int LoopsFromLastSend = 0;
-    int TellerMotatt = 0; //debug
-    int TellerMistet = 0; //debug
 
     while(true)
     {
         //processSerialMessageTx();
+
         if(ReadyToSend){
             SerialRxFifoToSend();
-            ReadyToSend = 0;
+            logger.iterateUplinkMessageCount();
+            ReadyToSend = false;
             LoopsFromLastSend = 0;
         }
         else if(ReceiveToSerialTxFifo()){
-            ReadyToSend = 1;
-            TellerMotatt++;
+            logger.iterateDownlinkMessageCount();
+            ReadyToSend = true;
         }
 
         if(LoopsFromLastSend>200)
         {
-            ReadyToSend = 1;
-            TellerMistet++;
+            logger.iterateLostMessageCount();
+            ReadyToSend = true;
         }
-
-        //printf("TellerMotatt: %d\n",TellerMotatt); //debug
-        //printf("TellerMistet: %d\n",TellerMistet); //debug
-        //printf("LoopsFromLastSend: %d\n",LoopsFromLastSend); //debug
         LoopsFromLastSend++;
 
+        printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
+        printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
+        printf("lostMessageCount: %d \n",logger.lostMessageCount);
 
-        if (timeToLogGroundModule())    {logger.reportGround();}
+        //if (timeToLogGroundModule())    {logger.reportGround();}
     }
     return 0;
 }

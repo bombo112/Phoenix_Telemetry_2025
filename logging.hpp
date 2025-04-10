@@ -38,11 +38,13 @@ private:
 public:
     uint32_t uplinkMessageCount;
     uint32_t downlinkMessageCount;
+    uint32_t lostMessageCount;
 
     inline void logSNR(float newReading)            {SNR  = std::max(newReading,  SNR);}
     inline void logRSSI(float newReading)           {RSSI = std::min(newReading, RSSI);}
     inline void iterateUplinkMessageCount(void)     {uplinkMessageCount++;}
     inline void iterateDownlinkMessageCount(void)   {downlinkMessageCount++;}
+    inline void iterateLostMessageCount(void)   {lostMessageCount++;}
 
     void reportRocket();
     void reportGround();

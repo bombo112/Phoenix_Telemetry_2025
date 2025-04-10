@@ -14,16 +14,16 @@ int RocketLoop()
         
         if(ReadyToSend)                 {
             CanRxFifoToSend();
+            logger.iterateDownlinkMessageCount();
             ReadyToSend = false;
         }
         else if(ReceiveToCanTxFifo())   {
+            logger.iterateUplinkMessageCount();
             ReadyToSend = true;
         }
 
-
-
-
-
+        printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
+        printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
 
         //if (timeToLogRocketModule())    {logger.reportRocket();}
     }
