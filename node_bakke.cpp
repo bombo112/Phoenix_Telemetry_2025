@@ -7,8 +7,8 @@ int GroundLoop()
     
     bool ReadyToSend = 1;
     int LoopsFromLastSend = 0;
-    int TellerMotatt = 0; //for tesating
-    int TellerMistet = 0; //for tesating
+    int TellerMotatt = 0; //debug
+    int TellerMistet = 0; //debug
 
     while(true)
     {
@@ -29,9 +29,9 @@ int GroundLoop()
             TellerMistet++;
         }
 
-        //printf("TellerMotatt: %d\n",TellerMotatt); //for tesating
-        //printf("TellerMistet: %d\n",TellerMistet); //for tesating
-        //printf("LoopsFromLastSend: %d\n",LoopsFromLastSend); //for tesating
+        //printf("TellerMotatt: %d\n",TellerMotatt); //debug
+        //printf("TellerMistet: %d\n",TellerMistet); //debug
+        //printf("LoopsFromLastSend: %d\n",LoopsFromLastSend); //debug
         LoopsFromLastSend++;
 
 

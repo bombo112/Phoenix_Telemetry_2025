@@ -36,8 +36,7 @@ constexpr size_t MaxBufferSize = 2000;
 static constexpr pico_unique_board_id_t RocketNodeId = {.id {0xD0,0x61,0x5D,0xC9,0x28,0xCC,0x1D,0x14}}; //D0615DC928CC1D14
 static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
 
-static uint16_t NothingToSendId = 399;
-static uint8_t NothingToSendData[8] = {1,2,3,4,5,6,7,8};
+static uint16_t InternalTelemetryMessageId = 399;
 
 
 #endif

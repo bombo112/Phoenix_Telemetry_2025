@@ -4,6 +4,40 @@
 RadioPackage::RadioPackage(){NumberOfBytes = 0;}
 
 
+RadioPackage::RadioPackage(uint8_t type){
+//Sets the number of bytes the packet has
+NumberOfBytes = CanFrameSize;
+
+//Adds the Can Id
+data[0] = InternalTelemetryMessageId;
+data[1] = InternalTelemetryMessageId>>8;
+
+//Adds the Can timestamp
+uint64_t timestamp = deltaTime();
+for (size_t i = 0; i < CanDeltaSize; i++){
+    data[CanIdSize + i] = timestamp>>(i*8);
+}
+
+//Adds the Can data
+switch (type){
+    case NothingToSend:
+        data[CanIdSize + CanDeltaSize  + 0] = 1;
+        data[CanIdSize + CanDeltaSize  + 1] = 1;
+        data[CanIdSize + CanDeltaSize  + 2] = 1;
+        data[CanIdSize + CanDeltaSize  + 3] = 1;
+        data[CanIdSize + CanDeltaSize  + 4] = 1;
+        data[CanIdSize + CanDeltaSize  + 5] = 1;
+        data[CanIdSize + CanDeltaSize  + 6] = 1;
+        data[CanIdSize + CanDeltaSize  + 7] = 1;
+        break;
+
+    default:
+        NumberOfBytes = 0;
+        break;
+    }
+}
+
+
 RadioPackage::~RadioPackage(){}
 
 

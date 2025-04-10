@@ -11,6 +11,8 @@
 
 inline canFrame CanSizeMessurment;
 
+const uint8_t NothingToSend = 0;
+
 
 static constexpr uint8_t CanIdSize = sizeof(CanSizeMessurment.id);
 static constexpr uint8_t CanDeltaSize = sizeof(CanSizeMessurment.delta);
@@ -30,6 +32,7 @@ class RadioPackage {
         uint8_t NumberOfBytes;
 
         RadioPackage();
+        RadioPackage(uint8_t type);
         ~RadioPackage();
         void send(void);
         void receive(void);
