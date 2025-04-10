@@ -10,7 +10,7 @@
 inline canFrame CanSizeMessurment;
 
 static constexpr uint8_t CanIdLength = sizeof(CanSizeMessurment.id);
-static constexpr uint8_t CanDeltaLength = sizeof(CanSizeMessurment.delta);
+static constexpr uint8_t CanDeltaLength = sizeof(CanSizeMessurment.time);
 static constexpr uint8_t CanDataLength = sizeof(CanSizeMessurment.data);
 static constexpr uint8_t CanLength = CanIdLength + CanDeltaLength + CanDataLength;
 static constexpr uint8_t MaxMessageLength = 252;

@@ -1,5 +1,6 @@
 #include <queue>
 #include <cstdio>
+#include <string>
 #include "mcp2515.h"
 #include "Settings.hpp"
 #include "pico/time.h"
@@ -10,11 +11,37 @@
 #define CANBUS_HPP
 
 
+
+class timeStamp
+{
+public:
+    uint8_t data[3];
+
+    void zero()  {data[0] = 0; data[1] = 0; data[2] = 0;}
+
+    uint64_t toInt()
+    {
+        return  (static_cast<uint64_t>(data[0]) << 16) |
+                (static_cast<uint64_t>(data[1]) << 8)  |
+                (static_cast<uint64_t>(data[2]));
+    }
+    timeStamp(uint64_t utcTick)
+    {
+        data[0] = (utcTick>>16) & 0xFF;
+        data[1] = (utcTick>>8) & 0xFF;
+        data[2] = (utcTick>>0) & 0xFF;
+    }
+    timeStamp()     {zero();}
+    ~timeStamp()    {}
+};
+
+
+
 class canFrame
 {
 public:
     uint16_t id;
-    uint16_t delta;
+    timeStamp time;
     uint8_t data[8];
 
     void print();
@@ -37,11 +64,21 @@ void loopbackCanFrame(canFrame &frameToBeSent);     // Send the can frame out on
 
 void canbusInit();
 
-inline uint64_t syncTimeReference;
 
-uint16_t deltaTime();
-void syncTime(canFrame timeFrame);
 
+
+
+constexpr uint64_t ticksPerDay  = 1<<24;                //    16777216  ticks/day
+constexpr uint64_t usPerDay     = 86400000000;          // 86400000000  microseconds/day
+constexpr uint64_t usPerTick    = usPerDay/ticksPerDay; //        5149  microseconds/tick
+
+static uint64_t utcPicoDeltaTime;
+
+
+
+void syncTime(canFrame gpsTimeFrame);
+timeStamp getTimeStamp();
+absolute_time_t parseTimeStamp(timeStamp time);
 
 
 #endif

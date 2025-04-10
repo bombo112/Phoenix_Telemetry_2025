@@ -3,21 +3,21 @@
 
 void canFrame::print()
 {
-    printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, delta, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+    printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, time.toInt(), data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 }
 
 
 canFrame::canFrame(can_frame frameToConvert)
 {
    id = frameToConvert.can_id;
-   delta = 0;
+   time.zero();
    for (size_t i = 0; i < 8; i++)   {data[i] = frameToConvert.data[i];}
 }
 
 canFrame::canFrame()
 {
     id = 0;
-    delta = 0;
+    time.zero();
     for (size_t i = 0; i < 8; i++)  {data[i] = 0;}
 }
 
@@ -77,7 +77,7 @@ bool processCanbusMessageRx()
 
     if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
-    canRx.delta = deltaTime();
+    canRx.time = getTimeStamp();
     canRxfifo.push(canRx);
     return true;
 }
@@ -128,23 +128,25 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 }
 
 
-uint16_t deltaTime()//skriv om til å være nåværende pico tid minus pico tid når vi fikk gpsrefsync
-{
-    absolute_time_t picoTime = get_absolute_time();
-    uint64_t picoUs = to_us_since_boot(picoTime);
 
-    uint16_t delta = picoUs + syncTimeReference;
-    return delta;
+void syncTime(canFrame gpsTimeFrame)
+{
+    absolute_time_t gpsTime = 0;                        //parse gps time can frame to micro seconds of the day
+    absolute_time_t picoTime = get_absolute_time();
+
+    utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);
 }
 
 
-void syncTime(canFrame canFrameTime)
-{
-    // husk dekoding av time sync melding
-    uint64_t gpsTime;
 
+
+
+timeStamp getTimeStamp()
+{
     absolute_time_t picoTime = get_absolute_time();
-    uint64_t picoUs = to_us_since_boot(picoTime);
-    
-    syncTimeReference = picoUs - gpsTime;
+    absolute_time_t utcTime = picoTime + utcPicoDeltaTime;
+
+    uint64_t utcTick = (usPerDay*utcTime)/usPerTick;
+    timeStamp stamp(utcTick);
+    return stamp;
 }

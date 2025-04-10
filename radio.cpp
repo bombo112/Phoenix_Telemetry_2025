@@ -36,7 +36,7 @@ message MessageFifoToSend(void){
     else{
         canFrame NothingToSend; //lag denne global så den ikke er gjenskapt hver syklus untatt av timestamp og indikator på at forrige pakke var mista elle noe sånt++
         NothingToSend.id = NothingToSendId;
-        NothingToSend.delta = deltaTime();
+        NothingToSend.time = getTimeStamp();
         memcpy(NothingToSend.data, NothingToSendData, sizeof(NothingToSendData));
         OutgoingRadioMessage.CanToMessage(NothingToSend);
         OutgoingRadioMessage.send();

@@ -50,7 +50,7 @@ void message::print(void){          //debug print
 bool message::CanToMessage(canFrame can){
     //lag alias for length til å bety noe med can størrelse
     memcpy(data+length, &can.id, sizeof(can.id));
-    memcpy(data+length+CanIdLength, &can.delta, sizeof(can.delta));
+    memcpy(data+length+CanIdLength, &can.time, sizeof(can.time));
     memcpy(data+length+CanDeltaLength+CanIdLength, &can.data, sizeof(can.data));
     length += CanLength;
     if(length>=(MaxMessageLength - CanLength))  {return 1;}  //oppdater navn med length som endrer navn
@@ -61,7 +61,7 @@ bool message::CanToMessage(canFrame can){
 canFrame message::MessageToCan(void){
     canFrame can;
     memcpy(can.data, data+length-CanDataLength, CanDataLength);
-    memcpy(&can.delta, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
+    memcpy(&can.time, data+length-CanDataLength-CanDeltaLength, CanDeltaLength);
     memcpy(&can.id, data+length-CanDataLength-CanDeltaLength-CanIdLength, CanIdLength);
     length -= CanLength;
     return can;

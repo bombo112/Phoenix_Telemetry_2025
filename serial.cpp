@@ -29,7 +29,7 @@ void processSerialMessageRx(void* param)//må skru av interupts
             canFrame frame;
             frame.id = stoi(sentenceParts[0], 0, 10);
         
-            for (size_t i = 1; i < sentenceParts.size(); i++)   {frame.data[i-1] = stoi(sentenceParts[i], 0, 10);}
+            for (size_t i = 1; i < sentenceParts.size(); i++)   {frame.data[i-1] = stoi(sentenceParts[i], 0, 16);}
             if (serialRxfifo.size() >= MaxBufferSize) {serialRxfifo.pop();}
 
             serialRxfifo.push(frame);
@@ -48,7 +48,7 @@ void processSerialMessageTx()
         canFrame frame = serialTxfifo.front(); serialTxfifo.pop();
         printf("%d,%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
             frame.id,
-            frame.delta, 
+            frame.time, 
             frame.data[0], 
             frame.data[1], 
             frame.data[2], 

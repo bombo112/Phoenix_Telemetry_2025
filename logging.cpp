@@ -25,10 +25,10 @@ void Logger::reportRocket()
     messageCounters.id  = 302;
     buffers.id          = 303;
 
-    status.delta           = deltaTime();
-    signalQuality.delta    = deltaTime();
-    messageCounters.delta  = deltaTime();
-    buffers.delta          = deltaTime();
+    status.time           = getTimeStamp();
+    signalQuality.time    = getTimeStamp();
+    messageCounters.time  = getTimeStamp();
+    buffers.time          = getTimeStamp();
 
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
@@ -74,10 +74,10 @@ void Logger::reportGround()
     messageCounters.id  = 302+20;
     buffers.id          = 303+20;
 
-    status.delta           = deltaTime();
-    signalQuality.delta    = deltaTime();
-    messageCounters.delta  = deltaTime();
-    buffers.delta          = deltaTime();
+    status.time           = getTimeStamp();
+    signalQuality.time    = getTimeStamp();
+    messageCounters.time  = getTimeStamp();
+    buffers.time          = getTimeStamp();
 
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
