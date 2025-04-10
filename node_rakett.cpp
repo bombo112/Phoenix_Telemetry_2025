@@ -13,7 +13,7 @@ int RocketLoop()
         processCanbusMessageTx();
         
         if(ReadyToSend)                 {
-            MessageFifoToSend();
+            CanRxFifoToSend();
             ReadyToSend = false;
         }
         else if(ReceiveToCanTxFifo())   {
