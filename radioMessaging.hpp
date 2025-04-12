@@ -12,7 +12,7 @@
 inline canFrame CanSizeMessurment;
 
 const uint8_t NothingToSend = 0;
-
+const uint8_t ResendPackage = 1;
 
 static constexpr uint8_t CanIdSize = sizeof(CanSizeMessurment.id);
 static constexpr uint8_t CanTimeSize = sizeof(CanSizeMessurment.time);

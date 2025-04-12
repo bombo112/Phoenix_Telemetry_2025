@@ -10,6 +10,7 @@
 
 RadioPackage CanRxFifoToSend(void);
 RadioPackage SerialRxFifoToSend(void);
+void SendResendPackageCommand(void);
 bool ReceiveToSerialTxFifo(void);
 bool ReceiveToCanTxFifo(void);
 

@@ -31,6 +31,17 @@ switch (type){
         data[CanIdSize + CanTimeSize  + 7] = 1;
         break;
 
+    case ResendPackage:
+        data[CanIdSize + CanTimeSize  + 0] = 2;
+        data[CanIdSize + CanTimeSize  + 1] = 2;
+        data[CanIdSize + CanTimeSize  + 2] = 2;
+        data[CanIdSize + CanTimeSize  + 3] = 2;
+        data[CanIdSize + CanTimeSize  + 4] = 2;
+        data[CanIdSize + CanTimeSize  + 5] = 2;
+        data[CanIdSize + CanTimeSize  + 6] = 2;
+        data[CanIdSize + CanTimeSize  + 7] = 2;
+        break;
+
     default:
         NumberOfBytes = 0;
         break;

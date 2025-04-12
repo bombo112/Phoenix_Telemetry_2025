@@ -6,16 +6,20 @@ int GroundLoop()
     serialInit();
     
     bool ReadyToSend = true;
+    bool ResendLastRadioPackage = false;
     int LoopsFromLastSend = 0;
+    RadioPackage LastRadioPackage;
 
     while(true)
     {
         //processSerialMessageTx();
 
         if(ReadyToSend){
-            SerialRxFifoToSend();
+            if(ResendLastRadioPackage)      {LastRadioPackage.send();}
+            else                            {LastRadioPackage = SerialRxFifoToSend();}
             logger.iterateUplinkMessageCount();
             ReadyToSend = false;
+            ResendLastRadioPackage = false;
             LoopsFromLastSend = 0;
         }
         else if(ReceiveToSerialTxFifo()){
@@ -25,8 +29,11 @@ int GroundLoop()
 
         if(LoopsFromLastSend>200)
         {
+            SendResendPackageCommand();
             logger.iterateLostMessageCount();
-            ReadyToSend = true;
+            //logger.iterateUplinkMessageCount();
+            ResendLastRadioPackage = true;
+            LoopsFromLastSend = 0;
         }
         LoopsFromLastSend++;
 

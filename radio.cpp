@@ -44,10 +44,17 @@ RadioPackage SerialRxFifoToSend(void){
 }
 
 
+void SendResendPackageCommand(void){
+    RadioPackage OutgoingRadioMessage(ResendPackage);
+    OutgoingRadioMessage.send();
+}
+
+
 bool ReceiveToSerialTxFifo(void){
     if(LoRa.parsePacket() == 0){return 0;}
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
+    ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
@@ -62,6 +69,7 @@ bool ReceiveToCanTxFifo(void){
     if(LoRa.parsePacket() == 0){return 0;}
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
+    ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);

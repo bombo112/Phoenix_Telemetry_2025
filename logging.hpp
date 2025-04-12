@@ -33,7 +33,6 @@ private:
     float SNR;                          // Signal to Noies Ratio
     uint16_t bufferMeasurements[BUFFER_COUNT];
     bool statusBits[STATUS_COUNT];
-    //legg til mistede og sånn
     
 public:
     uint32_t uplinkMessageCount;
