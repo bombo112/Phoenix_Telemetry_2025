@@ -6,13 +6,13 @@ int GroundLoop()
     serialInit();
     
     bool ReadyToSend = true;
-    bool ResendLastRadioPackage = false;
     int LoopsFromLastSend = 0;
     RadioPackage LastRadioPackage;
 
     while(true)
     {
         //processSerialMessageTx();
+        LoopsFromLastSend++;
 
         if(ReadyToSend){
             if(ResendLastRadioPackage)      {LastRadioPackage.send();}
@@ -32,14 +32,12 @@ int GroundLoop()
             SendResendPackageCommand();
             logger.iterateLostMessageCount();
             //logger.iterateUplinkMessageCount();
-            ResendLastRadioPackage = true;
             LoopsFromLastSend = 0;
         }
-        LoopsFromLastSend++;
 
-        printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
-        printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
-        printf("lostMessageCount: %d \n",logger.lostMessageCount);
+        //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
+        //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
+        //printf("lostMessageCount: %d \n",logger.lostMessageCount);
 
         //if (timeToLogGroundModule())    {logger.reportGround();}
     }

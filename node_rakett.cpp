@@ -6,24 +6,27 @@ int RocketLoop()
     canbusInit();
 
     bool ReadyToSend = false;
+    RadioPackage LastRadioPackage;
 
     while(true)
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
         
-        if(ReadyToSend)                 {
-            CanRxFifoToSend();
+        if(ReadyToSend){
+            if(ResendLastRadioPackage)      {LastRadioPackage.send();}
+            else                            {LastRadioPackage = CanRxFifoToSend();}
             logger.iterateDownlinkMessageCount();
             ReadyToSend = false;
+            ResendLastRadioPackage = false;
         }
-        else if(ReceiveToCanTxFifo())   {
+        else if(ReceiveToCanTxFifo()){
             logger.iterateUplinkMessageCount();
             ReadyToSend = true;
         }
 
-        printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
-        printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
+        //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
+        //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
 
         //if (timeToLogRocketModule())    {logger.reportRocket();}
     }

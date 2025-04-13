@@ -48,6 +48,7 @@ public:
     canFrame(can_frame frameToConvert);
     can_frame convert();
     canFrame();
+    bool CompareCanFrameDataToArray(uint8_t *arry);
 };
 
 inline std::queue<canFrame> canRxfifo;

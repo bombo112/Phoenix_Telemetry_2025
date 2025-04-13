@@ -9,7 +9,7 @@ RadioPackage::RadioPackage(uint8_t type){
 NumberOfBytes = CanFrameSize;
 
 //Adds the Can Id
-data[0] = InternalTelemetryMessageId;
+data[0] = InternalTelemetryMessageId & 0xFF;
 data[1] = InternalTelemetryMessageId>>8;
 
 //Adds the Can timestamp
@@ -21,25 +21,25 @@ data[CanIdSize + 2] = InternalTelemetryMessageTime.data[2];
 //Adds the Can data
 switch (type){
     case NothingToSend:
-        data[CanIdSize + CanTimeSize  + 0] = 1;
-        data[CanIdSize + CanTimeSize  + 1] = 1;
-        data[CanIdSize + CanTimeSize  + 2] = 1;
-        data[CanIdSize + CanTimeSize  + 3] = 1;
-        data[CanIdSize + CanTimeSize  + 4] = 1;
-        data[CanIdSize + CanTimeSize  + 5] = 1;
-        data[CanIdSize + CanTimeSize  + 6] = 1;
-        data[CanIdSize + CanTimeSize  + 7] = 1;
+        data[CanIdSize + CanTimeSize  + 0] = NothingToSendData[0];
+        data[CanIdSize + CanTimeSize  + 1] = NothingToSendData[1];
+        data[CanIdSize + CanTimeSize  + 2] = NothingToSendData[2];
+        data[CanIdSize + CanTimeSize  + 3] = NothingToSendData[3];
+        data[CanIdSize + CanTimeSize  + 4] = NothingToSendData[4];
+        data[CanIdSize + CanTimeSize  + 5] = NothingToSendData[5];
+        data[CanIdSize + CanTimeSize  + 6] = NothingToSendData[6];
+        data[CanIdSize + CanTimeSize  + 7] = NothingToSendData[7];
         break;
 
     case ResendPackage:
-        data[CanIdSize + CanTimeSize  + 0] = 2;
-        data[CanIdSize + CanTimeSize  + 1] = 2;
-        data[CanIdSize + CanTimeSize  + 2] = 2;
-        data[CanIdSize + CanTimeSize  + 3] = 2;
-        data[CanIdSize + CanTimeSize  + 4] = 2;
-        data[CanIdSize + CanTimeSize  + 5] = 2;
-        data[CanIdSize + CanTimeSize  + 6] = 2;
-        data[CanIdSize + CanTimeSize  + 7] = 2;
+        data[CanIdSize + CanTimeSize  + 0] = ResendPackageData[0];
+        data[CanIdSize + CanTimeSize  + 1] = ResendPackageData[1];
+        data[CanIdSize + CanTimeSize  + 2] = ResendPackageData[2];
+        data[CanIdSize + CanTimeSize  + 3] = ResendPackageData[3];
+        data[CanIdSize + CanTimeSize  + 4] = ResendPackageData[4];
+        data[CanIdSize + CanTimeSize  + 5] = ResendPackageData[5];
+        data[CanIdSize + CanTimeSize  + 6] = ResendPackageData[6];
+        data[CanIdSize + CanTimeSize  + 7] = ResendPackageData[7];
         break;
 
     default:
@@ -88,6 +88,7 @@ bool RadioPackage::CanToMessage(canFrame can){
     memcpy(data +NumberOfBytes + CanIdSize, &can.time, CanTimeSize);
     memcpy(data +NumberOfBytes + CanIdSize + CanTimeSize, &can.data, CanDataSize);
     NumberOfBytes += CanFrameSize;
+    IdsToPerformAction(can);
     if(NumberOfBytes>=(MaxNumberOfBytesForData - CanFrameSize))  {return 1;}
     return 0;
 }
@@ -98,5 +99,46 @@ canFrame RadioPackage::MessageToCan(int CanNumber){
     memcpy(&can.id, data + (CanNumber*CanFrameSize), CanIdSize);
     memcpy(&can.time, data + (CanNumber*CanFrameSize) + CanIdSize, CanTimeSize);
     memcpy(&can.data, data + (CanNumber*CanFrameSize) + CanIdSize + CanTimeSize, CanDataSize);
+    IdsToPerformAction(can);
     return can;
+}
+
+
+void RadioPackage::IdsToPerformAction(canFrame CanMessage){
+    pico_unique_board_id_t currentBoard;
+    pico_get_unique_board_id(&currentBoard);
+    
+    switch (CanMessage.id){
+    case InternalTelemetryMessageId:
+        if(CanMessage.CompareCanFrameDataToArray(NothingToSendData)){break;}
+        else if (CanMessage.CompareCanFrameDataToArray(ResendPackageData)){ResendLastRadioPackage = true;}
+        break;
+
+    case ResetRocketModuleId:
+        if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
+            if(CanMessage.CompareCanFrameDataToArray(ResetRocketModuleData)){}
+        }
+        break;
+
+    case BootSelectRocketModuleId:
+        if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){}
+        }
+        break;
+
+    case ResetGroundModuleId:
+        if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
+            if(CanMessage.CompareCanFrameDataToArray(ResetGroundModuleData)){}
+        }
+        break;
+
+    case BootSelectGroundModuleId:
+        if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){}
+        }
+        break;
+
+    default:
+        break;
+    }
 }

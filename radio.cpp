@@ -16,12 +16,12 @@ RadioPackage CanRxFifoToSend(void){
             OutgoingRadioMessage.CanToMessage(retrieveFrameFromCan());
         }
         OutgoingRadioMessage.send();
-        return OutgoingRadioMessage; //husk å implementerer resend hvis pakke drop
+        return OutgoingRadioMessage;
     }
     else{
         RadioPackage OutgoingRadioMessage(NothingToSend);
         OutgoingRadioMessage.send();
-        return OutgoingRadioMessage; //husk å implementerer resend hvis pakke drop
+        return OutgoingRadioMessage;
     }
 }
 
@@ -34,12 +34,12 @@ RadioPackage SerialRxFifoToSend(void){
             OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
         }
         OutgoingRadioMessage.send();
-        return OutgoingRadioMessage; //husk å implementerer resend hvis pakke drop
+        return OutgoingRadioMessage;
     }
     else{
         RadioPackage OutgoingRadioMessage(NothingToSend);
         OutgoingRadioMessage.send();
-        return OutgoingRadioMessage; //husk å implementerer resend hvis pakke drop
+        return OutgoingRadioMessage;
     }
 }
 
@@ -47,6 +47,7 @@ RadioPackage SerialRxFifoToSend(void){
 void SendResendPackageCommand(void){
     RadioPackage OutgoingRadioMessage(ResendPackage);
     OutgoingRadioMessage.send();
+    ResendLastRadioPackage = true;
 }
 
 
@@ -54,13 +55,15 @@ bool ReceiveToSerialTxFifo(void){
     if(LoRa.parsePacket() == 0){return 0;}
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
-    ReceiveRadioMessage.print(); //debug
+    if(WasThePackageSentTwice(ReceiveRadioMessage)){return 1;}
+    //ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
-        CanMessages.print();//debug
+        //CanMessages.print();//debug
         sendFrameToSerial(CanMessages);
     }
+    LastReceivedRadioPackage = ReceiveRadioMessage;
     return 1;
 }
 
@@ -69,12 +72,23 @@ bool ReceiveToCanTxFifo(void){
     if(LoRa.parsePacket() == 0){return 0;}
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
+    if(WasThePackageSentTwice(ReceiveRadioMessage)){return 1;}
     ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
-        CanMessages.print();//debug
+        //CanMessages.print();//debug
         sendFrameToCan(CanMessages);
     }
+    if(!ResendLastRadioPackage){LastReceivedRadioPackage = ReceiveRadioMessage;}
     return 1;
+}
+
+
+bool WasThePackageSentTwice(RadioPackage PackageToCheck){
+    if(PackageToCheck.NumberOfBytes != LastReceivedRadioPackage.NumberOfBytes){return false;}
+    for (size_t i = 0; i < PackageToCheck.NumberOfBytes; i++){
+        if(PackageToCheck.data[i] != LastReceivedRadioPackage.data[i]){return false;}
+    }
+    return true;
 }

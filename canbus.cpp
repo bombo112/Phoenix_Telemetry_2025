@@ -30,6 +30,14 @@ can_frame canFrame::convert()
     return frameToConvert;
 }
 
+bool canFrame::CompareCanFrameDataToArray(uint8_t *arry){
+    for (size_t i = 0; i < 8; i++)
+    {
+        if(data[i] != arry[i]){return 0;}
+    }
+    return 1;
+}
+
 
 void canbusInit()
 {

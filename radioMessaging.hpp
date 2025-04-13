@@ -8,7 +8,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-
+inline bool ResendLastRadioPackage = false;
 inline canFrame CanSizeMessurment;
 
 const uint8_t NothingToSend = 0;
@@ -24,11 +24,11 @@ static constexpr uint8_t MaxNumberOfCanFrame = MaxNumberOfBytesForData/CanFrameS
 
 class RadioPackage {
     private:
-        uint8_t data[MaxNumberOfBytesForData];
         int rssi;
         float snr;
 
     public:
+        uint8_t data[MaxNumberOfBytesForData];
         uint8_t NumberOfBytes;
 
         RadioPackage();
@@ -39,6 +39,7 @@ class RadioPackage {
         void print(void);
         bool CanToMessage(canFrame can);
         canFrame MessageToCan(int CanNumber);
+        void IdsToPerformAction(canFrame can);
     };
 
     
