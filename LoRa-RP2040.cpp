@@ -193,14 +193,14 @@ int LoRaClass::endPacket(bool async)
     }
     // clear IRQ's
     writeRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
+
+    // reset FIFO address
+    writeRegister(REG_FIFO_ADDR_PTR, 0);
+
+    // put in single RX mode
+    writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_RX_SINGLE);
   }
 
-  // reset FIFO address
-  writeRegister(REG_FIFO_ADDR_PTR, 0);
-
-  // put in single RX mode
-  writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_RX_SINGLE);
-  
   return 1;
 }
 

@@ -11,7 +11,6 @@ printf("Delta tid for CanRxFifoToMessageFifo i us: %d \n",(picoTime2us-picoTime1
 
 
 RadioPackage CanRxFifoToSend(void){
-    sleep_us(20); //gives the receiver time to switch to RX
     if(!canRxfifo.empty()){
         RadioPackage OutgoingRadioMessage;
         for (int i = 0; i < MaxNumberOfCanFrame && canRxfifo.size()>0; i++){
@@ -29,7 +28,6 @@ RadioPackage CanRxFifoToSend(void){
 
 
 RadioPackage SerialRxFifoToSend(void){
-    sleep_us(20); //gives the receiver time to switch to RX
     if(!canRxfifo.empty()){
         RadioPackage OutgoingRadioMessage;
         for (int i = 0; i < MaxNumberOfCanFrame && serialRxfifo.size()>0; i++){
