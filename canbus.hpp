@@ -70,7 +70,6 @@ void canbusInit();
 
 constexpr uint64_t ticksPerDay  = 1<<24;                //    16777216  ticks/day
 constexpr uint64_t usPerDay     = 86400000000;          // 86400000000  microseconds/day
-constexpr uint64_t usPerTick    = usPerDay/ticksPerDay; //        5149  microseconds/tick
 
 static uint64_t utcPicoDeltaTime;
 

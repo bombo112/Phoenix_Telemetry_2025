@@ -14,11 +14,16 @@ void Logger::reportRocket()
     bufferMeasurements[CANTX] = canTxfifo.size();
     bufferMeasurements[USBRX] = serialRxfifo.size();
     bufferMeasurements[USBTX] = serialTxfifo.size();
+    timeSinceBoot = to_ms_since_boot(get_absolute_time());
+    statusBits[CANRX] = canRxfifo.size() >= MaxBufferSize;
+    statusBits[CANTX] = canTxfifo.size() >= MaxBufferSize;
+    statusBits[USBRX] = serialRxfifo.size() >= MaxBufferSize;
+    statusBits[USBTX] = serialTxfifo.size() >= MaxBufferSize;
 
     canFrame buffers;           // CanRx    CanTx   UsbRx   UsbTx
     canFrame messageCounters;   // downlink         uplink
     canFrame signalQuality;     // SNR              RSSI
-    canFrame status;            // 64 bool
+    canFrame status;            // 16*bool lostpackets timesinceboot
 
     status.id           = 300;
     signalQuality.id    = 301;
@@ -33,7 +38,23 @@ void Logger::reportRocket()
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
     constexpr size_t BYTES_F32 = sizeof(float);
+
     
+    status.data[0] = 0;
+    status.data[1] = 0;
+
+    for (size_t i = 0; i < STATUS_COUNT && i < 16; ++i)
+    {
+        if (statusBits[i])
+        {
+            size_t byteIndex = i / 8;
+            size_t bitIndex  = i % 8;
+            status.data[byteIndex] |= (uint8_t)(1 << bitIndex);
+        }
+    }
+    memcpy(&status.data[BYTES_U16 * 2], &timeSinceBoot, BYTES_U16);
+    memcpy(&status.data[BYTES_U16 * 3], &lostPackages, BYTES_U16);
+
     memcpy(&buffers.data[BYTES_U16 * 0], &bufferMeasurements[CANRX], BYTES_U16);
     memcpy(&buffers.data[BYTES_U16 * 1], &bufferMeasurements[CANTX], BYTES_U16);
     memcpy(&buffers.data[BYTES_U16 * 2], &bufferMeasurements[USBRX], BYTES_U16);
@@ -63,11 +84,16 @@ void Logger::reportGround()
     bufferMeasurements[CANTX] = canTxfifo.size();
     bufferMeasurements[USBRX] = serialRxfifo.size();
     bufferMeasurements[USBTX] = serialTxfifo.size();
+    timeSinceBoot = to_ms_since_boot(get_absolute_time());
+    statusBits[CANRX] = canRxfifo.size() >= MaxBufferSize;
+    statusBits[CANTX] = canTxfifo.size() >= MaxBufferSize;
+    statusBits[USBRX] = serialRxfifo.size() >= MaxBufferSize;
+    statusBits[USBTX] = serialTxfifo.size() >= MaxBufferSize;
 
     canFrame buffers;           // CanRx    CanTx   UsbRx   UsbTx
     canFrame messageCounters;   // downlink         uplink
     canFrame signalQuality;     // SNR              RSSI
-    canFrame status;            // 64 bool
+    canFrame status;            // 16*bool lostpackets timesinceboot
 
     status.id           = 300+20;
     signalQuality.id    = 301+20;
@@ -82,7 +108,23 @@ void Logger::reportGround()
     constexpr size_t BYTES_U16 = sizeof(uint16_t);
     constexpr size_t BYTES_U32 = sizeof(uint32_t);
     constexpr size_t BYTES_F32 = sizeof(float);
+
     
+    status.data[0] = 0;
+    status.data[1] = 0;
+
+    for (size_t i = 0; i < STATUS_COUNT && i < 16; ++i)
+    {
+        if (statusBits[i])
+        {
+            size_t byteIndex = i / 8;
+            size_t bitIndex  = i % 8;
+            status.data[byteIndex] |= (uint8_t)(1 << bitIndex);
+        }
+    }
+    memcpy(&status.data[BYTES_U16 * 2], &timeSinceBoot, BYTES_U16);
+    memcpy(&status.data[BYTES_U16 * 3], &lostPackages, BYTES_U16);
+
     memcpy(&buffers.data[BYTES_U16 * 0], &bufferMeasurements[CANRX], BYTES_U16);
     memcpy(&buffers.data[BYTES_U16 * 1], &bufferMeasurements[CANTX], BYTES_U16);
     memcpy(&buffers.data[BYTES_U16 * 2], &bufferMeasurements[USBRX], BYTES_U16);

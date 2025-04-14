@@ -3,7 +3,35 @@
 
 void canFrame::print()
 {
-    printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, time.toInt(), data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+    constexpr uint64_t UsHour = 3600000000;
+    constexpr uint64_t UsMinute = 60000000;
+    constexpr uint64_t UsSecond  = 1000000; 
+
+    uint64_t UsTime = parseTimeStamp(time);
+
+    uint64_t hours   = UsTime / UsHour;
+    UsTime %= UsHour;
+
+    uint64_t minutes = UsTime / UsMinute;
+    UsTime %= UsMinute;
+
+    uint64_t seconds = UsTime / UsSecond;
+    uint64_t micro   = UsTime % UsSecond;
+
+    char buffer[32];
+    snprintf(buffer, 32, "%02llu:%02llu:%02llu.%06llu", hours, minutes, seconds, micro);
+
+    printf("%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%s\n",
+        id,
+        data[0], 
+        data[1], 
+        data[2], 
+        data[3], 
+        data[4], 
+        data[5], 
+        data[6], 
+        data[7],
+        buffer);
 }
 
 
@@ -128,7 +156,6 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 }
 
 
-
 void syncTime(canFrame gpsTimeFrame)
 {
     uint64_t gpsTime = 0;                                       //parse gps time can frame to micro seconds of the day
@@ -136,8 +163,6 @@ void syncTime(canFrame gpsTimeFrame)
 
     utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);
 }
-
-
 
 
 timeStamp getTimeStamp()

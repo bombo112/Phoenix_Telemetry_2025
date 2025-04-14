@@ -25,7 +25,7 @@ int RocketLoop()
 
 
 
-        //if (timeToLogRocketModule())    {logger.reportRocket();}
+        if (timeToLogRocketModule())    {logger.reportRocket();}
     }
 }
 

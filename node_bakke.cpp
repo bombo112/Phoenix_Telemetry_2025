@@ -35,7 +35,7 @@ int GroundLoop()
         LoopsFromLastSend++;
 
 
-        if (timeToLogGroundModule())    {logger.reportGround();}
+        //if (timeToLogGroundModule())    {logger.reportGround();}
     }
     return 0;
 }
