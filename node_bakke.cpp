@@ -27,7 +27,7 @@ int GroundLoop()
             ReadyToSend = true;
         }
 
-        if(LoopsFromLastSend>200)
+        if(LoopsFromLastSend>1000)
         {
             SendResendPackageCommand();
             logger.iterateLostMessageCount();
@@ -38,8 +38,8 @@ int GroundLoop()
         //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
         //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
         //printf("lostMessageCount: %d \n",logger.lostMessageCount);
+        //printf("LoopsFromLastSend: %d \n",LoopsFromLastSend);
 
-        //if (timeToLogGroundModule())    {logger.reportGround();}
     }
     return 0;
 }

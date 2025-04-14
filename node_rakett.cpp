@@ -10,6 +10,7 @@ int RocketLoop()
 
     while(true)
     {
+        absolute_time_t picoTime1 = get_absolute_time();
         processCanbusMessageRx();
         processCanbusMessageTx();
         
@@ -29,6 +30,10 @@ int RocketLoop()
         //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
 
         //if (timeToLogRocketModule())    {logger.reportRocket();}
+        absolute_time_t picoTime2 = get_absolute_time();
+        int picoTime1us = to_us_since_boot(picoTime1);
+        int picoTime2us = to_us_since_boot(picoTime2);
+        printf("Delta tid for CanRxFifoToMessageFifo i us: %d \n",(picoTime2us-picoTime1us));
     }
 }
 

@@ -100,7 +100,7 @@ int LoRaClass::begin(long frequency)
 
 
   // start SPI
-  spi_init(SPI_PORT, 12500);
+  spi_init(SPI_PORT, 1000000);//12500
   gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
   gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);
   gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
@@ -180,7 +180,6 @@ int LoRaClass::beginPacket(int implicitHeader)
 
 int LoRaClass::endPacket(bool async) 
 {
-
   if ((async) && (_onTxDone))
     writeRegister(REG_DIO_MAPPING_1, 0x40); // DIO0 => TXDONE
 
@@ -196,6 +195,12 @@ int LoRaClass::endPacket(bool async)
     writeRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK);
   }
 
+  // reset FIFO address
+  writeRegister(REG_FIFO_ADDR_PTR, 0);
+
+  // put in single RX mode
+  writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_RX_SINGLE);
+  
   return 1;
 }
 
