@@ -27,7 +27,7 @@ int GroundLoop()
             ReadyToSend = true;
         }
 
-        if(LoopsFromLastSend>1000)
+        if(LoopsFromLastSend>10000)
         {
             SendResendPackageCommand();
             logger.iterateLostMessageCount();

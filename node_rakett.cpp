@@ -28,7 +28,7 @@ int RocketLoop()
         //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
         //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
 
-        if (timeToLogRocketModule())    {logger.reportRocket();}
+        //if (timeToLogRocketModule())    {logger.reportRocket();}
     }
 }
 

@@ -58,11 +58,11 @@ bool ReceiveToSerialTxFifo(void){
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
     if(WasThePackageSentTwice(ReceiveRadioMessage)){return 1;}
-    ReceiveRadioMessage.print(); //debug
+    //ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
-        //CanMessages.print();//debug
+        CanMessages.print();//debug
         sendFrameToSerial(CanMessages);
     }
     LastReceivedRadioPackage = ReceiveRadioMessage;
@@ -75,11 +75,11 @@ bool ReceiveToCanTxFifo(void){
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
     if(WasThePackageSentTwice(ReceiveRadioMessage)){return 1;}
-    ReceiveRadioMessage.print(); //debug
+    //ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
-        //CanMessages.print();//debug
+        CanMessages.print();//debug
         sendFrameToCan(CanMessages);
     }
     if(!ResendLastRadioPackage){LastReceivedRadioPackage = ReceiveRadioMessage;}

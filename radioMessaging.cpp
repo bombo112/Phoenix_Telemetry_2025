@@ -14,9 +14,9 @@ data[1] = InternalTelemetryMessageId>>8;
 
 //Adds the Can timestamp
 timeStamp InternalTelemetryMessageTime = getTimeStamp();
-data[CanIdSize + 0] = InternalTelemetryMessageTime.data[2];
+data[CanIdSize + 0] = InternalTelemetryMessageTime.data[0];
 data[CanIdSize + 1] = InternalTelemetryMessageTime.data[1];
-data[CanIdSize + 2] = InternalTelemetryMessageTime.data[0];
+data[CanIdSize + 2] = InternalTelemetryMessageTime.data[2];
 
 //Adds the Can data
 switch (type){
