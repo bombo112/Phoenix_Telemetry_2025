@@ -45,10 +45,27 @@ void processSerialMessageTx()
 {
     while (!serialTxfifo.empty())
     {
+        constexpr uint64_t UsHour = 3600000000;
+        constexpr uint64_t UsMinute = 60000000;
+        constexpr uint64_t UsSecond  = 1000000; 
+
         canFrame frame = serialTxfifo.front(); serialTxfifo.pop();
-        printf("%d,%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+        uint64_t UsTime = parseTimeStamp(frame.time);
+
+        uint64_t hours   = UsTime / UsHour;
+        UsTime %= UsHour;
+
+        uint64_t minutes = UsTime / UsMinute;
+        UsTime %= UsMinute;
+
+        uint64_t seconds = UsTime / UsSecond;
+        uint64_t micro   = UsTime % UsSecond;
+
+        char buffer[32];
+        snprintf(buffer, 32, "%02llu:%02llu:%02llu.%06llu", hours, minutes, seconds, micro);
+
+        printf("%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%s\n",
             frame.id,
-            frame.time, 
             frame.data[0], 
             frame.data[1], 
             frame.data[2], 
@@ -56,7 +73,8 @@ void processSerialMessageTx()
             frame.data[4], 
             frame.data[5], 
             frame.data[6], 
-            frame.data[7]);
+            frame.data[7],
+            buffer);
     }
 }
 

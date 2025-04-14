@@ -3,7 +3,35 @@
 
 void canFrame::print()
 {
-    printf("ID: %d, DT:%d, DATA: %02x %02x %02x %02x %02x %02x %02x %02x\n", id, time.toInt(), data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+    constexpr uint64_t UsHour = 3600000000;
+    constexpr uint64_t UsMinute = 60000000;
+    constexpr uint64_t UsSecond  = 1000000; 
+
+    uint64_t UsTime = parseTimeStamp(time);
+
+    uint64_t hours   = UsTime / UsHour;
+    UsTime %= UsHour;
+
+    uint64_t minutes = UsTime / UsMinute;
+    UsTime %= UsMinute;
+
+    uint64_t seconds = UsTime / UsSecond;
+    uint64_t micro   = UsTime % UsSecond;
+
+    char buffer[32];
+    snprintf(buffer, 32, "%02llu:%02llu:%02llu.%06llu", hours, minutes, seconds, micro);
+
+    printf("%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%s\n",
+        id,
+        data[0], 
+        data[1], 
+        data[2], 
+        data[3], 
+        data[4], 
+        data[5], 
+        data[6], 
+        data[7],
+        buffer);
 }
 
 
@@ -136,25 +164,29 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 }
 
 
-
 void syncTime(canFrame gpsTimeFrame)
 {
-    absolute_time_t gpsTime = 0;                        //parse gps time can frame to micro seconds of the day
-    absolute_time_t picoTime = get_absolute_time();
+    uint64_t gpsTime = 0;                                       //parse gps time can frame to micro seconds of the day
+    uint64_t picoTime = to_us_since_boot(get_absolute_time());
 
     utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);
 }
 
 
-
-
-
 timeStamp getTimeStamp()
 {
-    absolute_time_t picoTime = get_absolute_time();
-    absolute_time_t utcTime = picoTime + utcPicoDeltaTime;
+    uint64_t picoTime = to_us_since_boot(get_absolute_time());
+    uint64_t microseconds =  picoTime + utcPicoDeltaTime;
 
-    uint64_t utcTick = (usPerDay*utcTime)/usPerTick;
-    timeStamp stamp(utcTick);
+    uint64_t ticks = (microseconds * ticksPerDay) / usPerDay;
+    timeStamp stamp(ticks);
     return stamp;
+}
+
+
+uint64_t parseTimeStamp(timeStamp stamp)
+{
+    uint64_t ticks = stamp.toInt();
+    uint64_t microseconds = (ticks * usPerDay) / ticksPerDay;
+    return microseconds;
 }

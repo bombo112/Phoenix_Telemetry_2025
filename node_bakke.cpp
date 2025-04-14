@@ -40,6 +40,7 @@ int GroundLoop()
         //printf("lostMessageCount: %d \n",logger.lostMessageCount);
         //printf("LoopsFromLastSend: %d \n",LoopsFromLastSend);
 
+        //if (timeToLogGroundModule())    {logger.reportGround();}
     }
     return 0;
 }

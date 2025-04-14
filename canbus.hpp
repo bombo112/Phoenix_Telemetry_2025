@@ -25,7 +25,7 @@ public:
                 (static_cast<uint64_t>(data[1]) << 8)  |
                 (static_cast<uint64_t>(data[2]));
     }
-    timeStamp(uint64_t utcTick)
+    explicit timeStamp(uint64_t utcTick)
     {
         data[0] = (utcTick>>16) & 0xFF;
         data[1] = (utcTick>>8) & 0xFF;
@@ -71,7 +71,6 @@ void canbusInit();
 
 constexpr uint64_t ticksPerDay  = 1<<24;                //    16777216  ticks/day
 constexpr uint64_t usPerDay     = 86400000000;          // 86400000000  microseconds/day
-constexpr uint64_t usPerTick    = usPerDay/ticksPerDay; //        5149  microseconds/tick
 
 static uint64_t utcPicoDeltaTime;
 
@@ -79,7 +78,7 @@ static uint64_t utcPicoDeltaTime;
 
 void syncTime(canFrame gpsTimeFrame);
 timeStamp getTimeStamp();
-absolute_time_t parseTimeStamp(timeStamp time);
+uint64_t parseTimeStamp(timeStamp time);
 
 
 #endif
