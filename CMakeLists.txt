@@ -73,6 +73,7 @@ target_link_libraries(Phoenix_Telemetry_2025
         hardware_dma
         hardware_timer
         hardware_watchdog
+        pico_multicore
 )
 
 pico_add_extra_outputs(Phoenix_Telemetry_2025)

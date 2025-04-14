@@ -46,9 +46,8 @@ void processSerialMessageTx()
     while (!serialTxfifo.empty())
     {
         canFrame frame = serialTxfifo.front(); serialTxfifo.pop();
-        printf("%d,%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+        printf("%d,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%d\n",
             frame.id,
-            parseTimeStamp(frame.time)/1000, 
             frame.data[0], 
             frame.data[1], 
             frame.data[2], 
@@ -56,7 +55,8 @@ void processSerialMessageTx()
             frame.data[4], 
             frame.data[5], 
             frame.data[6], 
-            frame.data[7]);
+            frame.data[7],
+            parseTimeStamp(frame.time)/1000);
     }
 }
 

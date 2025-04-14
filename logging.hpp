@@ -23,8 +23,13 @@ private:
     } BufferIndex;
 
     typedef enum {
-        RUNNING,
-        NODE,
+        RUNNING_INDIKATOR,
+        NOT_FROZEN_INDICATOR,
+        NODE_INDICATOR,
+        CANRX_NOT_FULL_INDICATOR,
+        CANTX_NOT_FULL_INDICATOR,
+        SERIALRX_NOT_FULL_INDICATOR,
+        SERIALTX_NOT_FULL_INDICATOR,
         STATUS_COUNT
     } Indicators;
 

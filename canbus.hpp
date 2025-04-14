@@ -6,10 +6,19 @@
 #include "pico/time.h"
 #include "pico/bootrom.h"
 #include "pico/bootrom_constants.h"
+#include "pico/util/queue.h"
+#include "pico/multicore.h"
 
 #ifndef CANBUS_HPP
 #define CANBUS_HPP
 
+
+
+struct canFrameData {
+    uint16_t id;
+    uint8_t time[3];   // Raw timestamp data.
+    uint8_t data[8];
+};
 
 
 class timeStamp
@@ -48,8 +57,19 @@ public:
     canFrame(can_frame frameToConvert);
     can_frame convert();
     canFrame();
+
+    canFrameData toPlainData();
+    canFrame(const canFrameData &dataStruct);
 };
 
+//multicore canbus
+inline queue_t canRxfifoMultiCore;
+inline queue_t canTxfifoMultiCore;
+
+void canBusLoop();
+
+
+// standard canbus
 inline std::queue<canFrame> canRxfifo;
 inline std::queue<canFrame> canTxfifo;
 inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
@@ -63,8 +83,6 @@ canFrame retrieveFrameFromCan();
 void loopbackCanFrame(canFrame &frameToBeSent);     // Send the can frame out on bus and loops it back on the recieving end to be read back to ground
 
 void canbusInit();
-
-
 
 
 

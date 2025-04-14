@@ -45,5 +45,10 @@ int GroundLoop()
 inline bool timeToLogGroundModule()
 {
     static absolute_time_t lastLoggingTime = get_absolute_time();
-    return (absolute_time_diff_us(lastLoggingTime, get_absolute_time()) >= loggingInterval);
+    if (absolute_time_diff_us(lastLoggingTime, get_absolute_time()) >= loggingInterval)
+    {
+        lastLoggingTime = get_absolute_time();
+        return true;
+    }
+    return false;
 }
