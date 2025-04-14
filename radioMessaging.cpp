@@ -116,25 +116,25 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
 
     case ResetRocketModuleId:
         if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(ResetRocketModuleData)){}
+            if(CanMessage.CompareCanFrameDataToArray(ResetRocketModuleData)){rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);}
         }
         break;
 
     case BootSelectRocketModuleId:
         if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){}
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){rom_reset_usb_boot(0,0);}
         }
         break;
 
     case ResetGroundModuleId:
         if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(ResetGroundModuleData)){}
+            if(CanMessage.CompareCanFrameDataToArray(ResetGroundModuleData)){rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);}
         }
         break;
 
     case BootSelectGroundModuleId:
         if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){}
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){rom_reset_usb_boot(0,0);}
         }
         break;
 

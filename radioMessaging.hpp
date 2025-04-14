@@ -3,6 +3,8 @@
 #include "LoRa-RP2040.h"
 #include "Settings.hpp"
 #include "logging.hpp"
+#include "pico/bootrom.h"
+#include "pico/bootrom_constants.h"
 
 
 #ifndef MESSAGE_H
