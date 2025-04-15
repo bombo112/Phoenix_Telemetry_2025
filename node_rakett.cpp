@@ -20,9 +20,11 @@ int RocketLoop()
             ReadyToSend = false;
             ResendLastRadioPackage = false;
         }
-        else if(ReceiveToCanTxFifo()){
-            logger.iterateUplinkMessageCount();
-            ReadyToSend = true;
+        else if(!gpio_get(Pin_Radio_DIO0)){
+            if(ReceiveToCanTxFifo()){
+                logger.iterateUplinkMessageCount();
+                ReadyToSend = true;
+            }
         }
 
         //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);

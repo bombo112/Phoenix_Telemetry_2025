@@ -22,9 +22,11 @@ int GroundLoop()
             ResendLastRadioPackage = false;
             LoopsFromLastSend = 0;
         }
-        else if(ReceiveToSerialTxFifo()){
-            logger.iterateDownlinkMessageCount();
-            ReadyToSend = true;
+        else if(!gpio_get(Pin_Radio_DIO0)){
+            if(ReceiveToSerialTxFifo()){
+                logger.iterateDownlinkMessageCount();
+                ReadyToSend = true;
+            }
         }
 
         if(LoopsFromLastSend>10000)
