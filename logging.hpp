@@ -49,10 +49,11 @@ public:
     inline void logRSSI(float newReading)           {RSSI = std::min(newReading, RSSI);}
     inline void iterateUplinkMessageCount(void)     {uplinkMessageCount++;}
     inline void iterateDownlinkMessageCount(void)   {downlinkMessageCount++;}
-    inline void iterateLostMessageCount(void)   {lostMessageCount++;}
+    inline void iterateLostMessageCount(void)       {lostMessageCount++;}
 
-    void reportRocket();
-    void reportGround();
+    void report(bool nodeIsRocket);
+    void reportGround() {report(false);}
+    void reportRocket() {report(true);}
     
     Logger();
     ~Logger();

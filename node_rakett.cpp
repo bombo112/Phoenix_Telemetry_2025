@@ -12,7 +12,7 @@ int RocketLoop()
     {
         processCanbusMessageRx();
         processCanbusMessageTx();
-        
+
         if(ReadyToSend){
             if(ResendLastRadioPackage)      {LastRadioPackage.send();}
             else                            {LastRadioPackage = CanRxFifoToSend();}
@@ -27,14 +27,17 @@ int RocketLoop()
 
         //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
         //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
-
-        //if (timeToLogRocketModule())    {logger.reportRocket();}
+        if (timeToLogRocketModule())    {logger.reportRocket();}
     }
 }
 
 
-inline bool timeToLogRocketModule()
-{
+inline bool timeToLogRocketModule() {
     static absolute_time_t lastLoggingTime = get_absolute_time();
-    return (absolute_time_diff_us(lastLoggingTime, get_absolute_time()) >= loggingInterval);
+    absolute_time_t now = get_absolute_time();
+    if (absolute_time_diff_us(lastLoggingTime, now) >= loggingInterval) {
+        lastLoggingTime = now;
+        return true;
+    }
+    return false;
 }
