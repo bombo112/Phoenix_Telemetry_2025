@@ -121,10 +121,24 @@ bool processCanbusMessageRx()
 
 bool processCanbusMessageTx()
 {
-    if (canTxfifo.empty())                                      {return false;}
-    canFrame canTx = canTxfifo.front();                         canTxfifo.pop();
-    can_frame cantx = canTx.convert();
-    if (canbus.sendMessage(&cantx) != MCP2515::ERROR_OK)        {return false;}
+    const size_t maxRetries = 1000;
+    size_t tries = 0;
+
+    if (canTxfifo.empty())                              {return false;}
+
+    canFrame frame = canTxfifo.front();
+    can_frame frame_ = frame.convert();
+    MCP2515::ERROR error = canbus.sendMessage(&frame_);
+
+    while (error == MCP2515::ERROR_ALLTXBUSY)
+    {
+        if (tries > maxRetries)                         {break;}
+        error = canbus.sendMessage(&frame_);
+        tries++;
+        sleep_us(10);
+    }
+    if (error == MCP2515::ERROR_FAILTX)                 {return false;}
+    canTxfifo.pop();
     return true;
 }
 
