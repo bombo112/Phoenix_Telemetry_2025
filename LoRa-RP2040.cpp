@@ -141,6 +141,14 @@ int LoRaClass::begin(long frequency)
   // set output power to 17 dBm
   setTxPower(17);
 
+
+  setSpreadingFactor(7);
+  setCodingRate4(5);
+  //setSignalBandwidth(500);
+
+
+
+
   // put in standby mode
   idle();
 

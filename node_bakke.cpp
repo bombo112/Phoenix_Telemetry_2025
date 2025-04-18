@@ -11,7 +11,7 @@ int GroundLoop()
 
     while(true)
     {
-        //processSerialMessageTx();
+        processSerialMessageTx();
         LoopsFromLastSend++;
 
         if(ReadyToSend){

@@ -60,7 +60,7 @@ bool ReceiveToSerialTxFifo(void){
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
         canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
-        CanMessages.print();//debug
+        //CanMessages.print();//debug
         sendFrameToSerial(CanMessages);
     }
     LastReceivedRadioPackage = ReceiveRadioMessage;
