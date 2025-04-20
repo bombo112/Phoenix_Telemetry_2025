@@ -7,13 +7,14 @@
 #ifndef RADIO_H
 #define RADIO_H
 
+inline RadioPackage LastSentRadioPackage;
 inline RadioPackage LastReceivedRadioPackage;
 
-RadioPackage CanRxFifoToSend(void);
-RadioPackage SerialRxFifoToSend(void);
+void CanRxFifoToSend(void);
+void SerialRxFifoToSend(void);
 void SendResendPackageCommand(void);
-bool ReceiveToSerialTxFifo(void);
-bool ReceiveToCanTxFifo(void);
+void ReceiveToSerialTxFifo(void);
+void ReceiveToCanTxFifo(void);
 bool WasThePackageSentTwice(RadioPackage PackageToCheck);
 
 

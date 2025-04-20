@@ -10,7 +10,10 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-inline bool ResendLastRadioPackage = false;
+inline bool ReadyToSend;
+inline bool ResendLastRadioPackage;
+inline int LoopFromLastBroadcast;
+
 inline canFrame CanSizeMessurment;
 
 const uint8_t NothingToSend = 0;

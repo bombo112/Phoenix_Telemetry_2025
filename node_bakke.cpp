@@ -5,44 +5,22 @@ int GroundLoop()
 {
     serialInit();
     
-    bool ReadyToSend = true;
-    int LoopsFromLastSend = 0;
-    RadioPackage LastRadioPackage;
+    ReadyToSend = true;
+    ResendLastRadioPackage = false;
+    LoopFromLastBroadcast = 0;
 
     while(true)
     {
         processSerialMessageTx();
-        LoopsFromLastSend++;
 
-        if(ReadyToSend){
-            if(ResendLastRadioPackage)      {LastRadioPackage.send();}
-            else                            {LastRadioPackage = SerialRxFifoToSend();}
-            logger.iterateUplinkMessageCount();
-            ReadyToSend = false;
-            ResendLastRadioPackage = false;
-            LoopsFromLastSend = 0;
-        }
-        else if(!gpio_get(Pin_Radio_DIO0)){
-            if(ReceiveToSerialTxFifo()){
-                logger.iterateDownlinkMessageCount();
-                ReadyToSend = true;
-            }
-        }
+        if(ReadyToSend)                     {SerialRxFifoToSend();}
+        else if(!gpio_get(Pin_Radio_DIO0))  {ReceiveToSerialTxFifo();}
 
-        if(LoopsFromLastSend>10000)
-        {
-            SendResendPackageCommand();
-            logger.iterateLostMessageCount();
-            //logger.iterateUplinkMessageCount();
-            LoopsFromLastSend = 0;
-        }
+        if(LoopFromLastBroadcast>10000)     {SendResendPackageCommand();}
 
-        //printf("uplinkMessageCount: %d \n",logger.uplinkMessageCount);
-        //printf("downlinkMessageCount: %d \n",logger.downlinkMessageCount);
-        //printf("lostMessageCount: %d \n",logger.lostMessageCount);
-        //printf("LoopsFromLastSend: %d \n",LoopsFromLastSend);
+        if(timeToLogGroundModule())         {logger.reportGround();}
 
-        //if (timeToLogGroundModule())    {logger.reportGround();}
+        LoopFromLastBroadcast++;
     }
     return 0;
 }
