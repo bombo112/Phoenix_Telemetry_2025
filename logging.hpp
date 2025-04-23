@@ -4,6 +4,7 @@
 #include <queue>
 #include "canbus.hpp"
 #include "serial.hpp"
+#include "hardware/watchdog.h"
 
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
@@ -30,6 +31,7 @@ private:
         CAN_TX_OVERFLOW_INDICATOR,
         SERIAL_RX_OVERFLOW_INDICATOR,
         SERIAL_TX_OVERFLOW_INDICATOR,
+        WATCHDOG_HAS_REBOOTED,
         STATUS_COUNT
     } Indicators;
 
@@ -61,6 +63,15 @@ public:
 
 inline Logger logger;
 
+inline bool notFrozenIndicator() {
+    static absolute_time_t lastLoggingTime = get_absolute_time();
+    absolute_time_t now = get_absolute_time();
+    if (absolute_time_diff_us(lastLoggingTime, now) >= 1500000) {
+        lastLoggingTime = now;
+        return true;
+    }
+    return false;
+}
 
 
 #endif

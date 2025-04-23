@@ -15,10 +15,14 @@ void Logger::report(bool nodeIsRocket)
     bufferMeasurements[USBRX] = static_cast<uint16_t>(serialRxfifo.size());
     bufferMeasurements[USBTX] = static_cast<uint16_t>(serialTxfifo.size());
     timeSinceBoot = to_ms_since_boot(get_absolute_time());
-    statusBits[CANRX] = canRxfifo.size() >= MaxBufferSize;
-    statusBits[CANTX] = canTxfifo.size() >= MaxBufferSize;
-    statusBits[USBRX] = serialRxfifo.size() >= MaxBufferSize;
-    statusBits[USBTX] = serialTxfifo.size() >= MaxBufferSize;
+
+    statusBits[CAN_RX_OVERFLOW_INDICATOR]       = canRxfifo.size() >= MaxBufferSize;
+    statusBits[CAN_TX_OVERFLOW_INDICATOR]       = canTxfifo.size() >= MaxBufferSize;
+    statusBits[SERIAL_RX_OVERFLOW_INDICATOR]    = serialRxfifo.size() >= MaxBufferSize;
+    statusBits[SERIAL_TX_OVERFLOW_INDICATOR]    = serialTxfifo.size() >= MaxBufferSize;
+    statusBits[WATCHDOG_HAS_REBOOTED]           = watchdog_caused_reboot();
+    statusBits[NOT_FROZEN_INDICATOR]            = notFrozenIndicator();
+    statusBits[RUNNING_INDICATOR]               = true;
 
     canFrame buffers;           // CanRx    CanTx   UsbRx   UsbTx
     canFrame messageCounters;   // downlink         uplink
@@ -29,8 +33,6 @@ void Logger::report(bool nodeIsRocket)
     signalQuality.id    = 301 + (!nodeIsRocket * 20);
     messageCounters.id  = 302 + (!nodeIsRocket * 20);
     buffers.id          = 303 + (!nodeIsRocket * 20);
-    printf("buffer size: %d\n", bufferMeasurements[CANRX]);
-    
 
     status.time           = getTimeStamp();
     signalQuality.time    = getTimeStamp();
@@ -54,6 +56,7 @@ void Logger::report(bool nodeIsRocket)
             status.data[byteIndex] |= (uint8_t)(1 << bitIndex);
         }
     }
+    
     memcpy(&status.data[BYTES_U16 * 2], &timeSinceBoot, BYTES_U16);
     memcpy(&status.data[BYTES_U16 * 3], &lostPackages, BYTES_U16);
 
