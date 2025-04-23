@@ -10,7 +10,7 @@ int RocketLoop()
 
     while(true)
     {
-        processCanbusMessageRx();
+        processCanbusMessageRx(true);
         processCanbusMessageTx();
 
         if(ReadyToSend)                     {CanRxFifoToSend();}

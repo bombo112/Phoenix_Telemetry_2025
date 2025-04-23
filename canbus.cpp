@@ -103,7 +103,7 @@ bool IDisOfInterest(const canFrame incoming)
 }
 
 
-bool processCanbusMessageRx(bool printIncoming = false)
+bool processCanbusMessageRx(bool printIncoming)
 {
     struct can_frame canrx;
     MCP2515::ERROR error = canbus.readMessage(&canrx);
@@ -112,6 +112,7 @@ bool processCanbusMessageRx(bool printIncoming = false)
     if (printIncoming)                                          {canRx.print();}    //debug
 
     if (!IDisOfInterest(canRx))                                 {return false;}
+    if (canRx.id == utcSynchFrameId)                            {syncTime(canRx);}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRx.time = getTimeStamp();
     canRxfifo.push(canRx);
@@ -179,8 +180,19 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 
 
 void syncTime(canFrame gpsTimeFrame)
-{
-    uint64_t gpsTime = 0;                                       //parse gps time can frame to micro seconds of the day
+{   
+    float utc = 0;
+    memcpy(&utc, &gpsTimeFrame.data[4], sizeof(utc));
+
+    int32_t hhmmss = static_cast<int>(utc); 
+
+    int32_t hours   = hhmmss / 10000;
+    int32_t minutes = (hhmmss / 100) % 100;
+    int32_t seconds = hhmmss % 100;
+    float frac = utc - hhmmss;
+
+    //parse gps time can frame to micro seconds of the day
+    uint64_t gpsTime = (hours*60*60*1000000) + (minutes*60*1000000) + (seconds*1000000) + (frac*1000000);
     uint64_t picoTime = to_us_since_boot(get_absolute_time());
 
     utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);

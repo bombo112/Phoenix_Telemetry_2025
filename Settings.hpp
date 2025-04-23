@@ -30,6 +30,7 @@ static constexpr uint64_t RadioFrekvens   = 411E6;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
 constexpr uint32_t idsToSendToGround[] = {200, 201, 202, 203, 204, 300, 301, 302, 303};
+static constexpr uint32_t utcSynchFrameId = 201;
 
 constexpr size_t MaxBufferSize = 2000;
 
@@ -37,15 +38,11 @@ static constexpr pico_unique_board_id_t RocketNodeId = {.id {0xD0,0x61,0x5D,0xC9
 static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
 
 const uint16_t ResetRocketModuleId = 304;
-const uint16_t BootSelectRocketModuleId = 305;
 const uint16_t ResetGroundModuleId = 324;
-const uint16_t BootSelectGroundModuleId = 325;
 const uint16_t InternalTelemetryMessageId = 399;
 
-static uint8_t ResetRocketModuleData[8] = {1,2,3,4,5,6,7,8};
-static uint8_t BootSelectRocketModuleData[8] = {1,2,3,4,5,6,7,8};
-static uint8_t ResetGroundModuleData[8] = {1,2,3,4,5,6,7,8};
-static uint8_t BootSelectGroundModuleData[8] = {1,2,3,4,5,6,7,8};
+static uint8_t ResetRocketModuleKey[8] = {1,2,3,4,5,6,7,8};
+static uint8_t ResetGroundModuleKey[8] = {1,2,3,4,5,6,7,8};
 static uint8_t NothingToSendData[8] = {1,1,1,1,1,1,1,1};
 static uint8_t ResendPackageData[8] = {2,2,2,2,2,2,2,2};
 

@@ -95,35 +95,24 @@ canFrame RadioPackage::MessageToCan(int CanNumber){
 void RadioPackage::IdsToPerformAction(canFrame CanMessage){
     pico_unique_board_id_t currentBoard;
     pico_get_unique_board_id(&currentBoard);
-    printf("ACTION!\n");
-    CanMessage.print();
-    switch (CanMessage.id){
+    switch (CanMessage.id)
+    {
     case InternalTelemetryMessageId:
-        if(CanMessage.CompareCanFrameDataToArray(NothingToSendData)){break;}
-        else if (CanMessage.CompareCanFrameDataToArray(ResendPackageData)){ResendLastRadioPackage = true;}
+        if(CanMessage.CompareCanFrameDataToArray(NothingToSendData))        {break;}
+        else if (CanMessage.CompareCanFrameDataToArray(ResendPackageData))  {ResendLastRadioPackage = true;}
         break;
 
     case ResetRocketModuleId:
-        if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(ResetRocketModuleData)){rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);}
-        }
-        break;
-
-    case BootSelectRocketModuleId:
-        if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){/*rom_reset_usb_boot(0,0);*/}     //unsafe for flight
+        if ((memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetRocketModuleKey))
+        {
+            rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
         }
         break;
 
     case ResetGroundModuleId:
-        if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(ResetGroundModuleData)){rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);}
-        }
-        break;
-
-    case BootSelectGroundModuleId:
-        if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){/*rom_reset_usb_boot(0,0);*/}     //unsafe for flight
+        if ((memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetGroundModuleKey))
+        {
+            rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
         }
         break;
 
