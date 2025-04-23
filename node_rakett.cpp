@@ -1,13 +1,16 @@
 #include "node_rakett.hpp"
 
 
-int RocketLoop()
+void RocketLoop()
 {   
+    watchdog_update();
+
     canbusInit();
 
     ReadyToSend = false;
     ResendLastRadioPackage = false;
 
+    watchdog_update();
     while(true)
     {
         processCanbusMessageRx(true);
@@ -17,8 +20,8 @@ int RocketLoop()
         else if(!gpio_get(Pin_Radio_DIO0))  {ReceiveToCanTxFifo();}
 
         //if (timeToLogRocketModule())        {logger.reportRocket();}
+        watchdog_update();
     }
-    return 0;
 }
 
 

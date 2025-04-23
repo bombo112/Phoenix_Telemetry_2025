@@ -1,14 +1,15 @@
 #include "node_bakke.hpp"
 
 
-int GroundLoop()
+void GroundLoop()
 {
+    watchdog_update();
     serialInit();
-    printf("BOOTUP!\n");
     ReadyToSend = true;
     ResendLastRadioPackage = false;
     LoopFromLastBroadcast = 0;
 
+    watchdog_update();
     while(true)
     {
         processSerialMessageTx();
@@ -21,8 +22,10 @@ int GroundLoop()
         if(timeToLogGroundModule())         {logger.reportGround();}
 
         LoopFromLastBroadcast++;
+
+
+        watchdog_update();
     }
-    return 0;
 }
 
 
