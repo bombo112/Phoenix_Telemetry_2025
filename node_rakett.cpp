@@ -16,7 +16,7 @@ int RocketLoop()
         if(ReadyToSend)                     {CanRxFifoToSend();}
         else if(!gpio_get(Pin_Radio_DIO0))  {ReceiveToCanTxFifo();}
 
-        if (timeToLogRocketModule())        {logger.reportRocket();}
+        //if (timeToLogRocketModule())        {logger.reportRocket();}
     }
     return 0;
 }

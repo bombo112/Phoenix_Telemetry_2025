@@ -25,9 +25,7 @@ void CanRxFifoToSend(void){
         OutgoingRadioMessage.send();
         LastSentRadioPackage = OutgoingRadioMessage;
     }
-    ReadyToSend = false;
     ResendLastRadioPackage = false;
-    logger.iterateUplinkMessageCount();
 }
 
 
@@ -46,10 +44,7 @@ void SerialRxFifoToSend(void){
         OutgoingRadioMessage.send();
         LastSentRadioPackage = OutgoingRadioMessage;
     }
-    ReadyToSend = false;
     ResendLastRadioPackage = false;
-    LoopFromLastBroadcast = 0;
-    logger.iterateUplinkMessageCount();
 }
 
 
@@ -57,9 +52,7 @@ void SendResendPackageCommand(void){
     RadioPackage OutgoingRadioMessage(ResendPackage);
     OutgoingRadioMessage.send();
     ResendLastRadioPackage = true;
-    LoopFromLastBroadcast = 0;
     logger.iterateLostMessageCount();
-    logger.iterateUplinkMessageCount();
 }
 
 
@@ -76,8 +69,6 @@ void ReceiveToSerialTxFifo(void){
         sendFrameToSerial(CanMessages);
     }
     LastReceivedRadioPackage = ReceiveRadioMessage;
-    ReadyToSend = true;
-    logger.iterateDownlinkMessageCount();
     return;
 }
 
@@ -95,8 +86,6 @@ void ReceiveToCanTxFifo(void){
         sendFrameToCan(CanMessages);
     }
     if(!ResendLastRadioPackage){LastReceivedRadioPackage = ReceiveRadioMessage;}
-    ReadyToSend = true;
-    logger.iterateDownlinkMessageCount();
     return;
 }
 

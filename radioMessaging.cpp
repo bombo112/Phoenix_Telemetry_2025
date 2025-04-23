@@ -9,37 +9,20 @@ RadioPackage::RadioPackage(uint8_t type){
 NumberOfBytes = CanFrameSize;
 
 //Adds the Can Id
-data[0] = InternalTelemetryMessageId & 0xFF;
-data[1] = InternalTelemetryMessageId>>8;
+memcpy(data, &InternalTelemetryMessageId, CanIdSize);
 
 //Adds the Can timestamp
 timeStamp InternalTelemetryMessageTime = getTimeStamp();
-data[CanIdSize + 0] = InternalTelemetryMessageTime.data[0];
-data[CanIdSize + 1] = InternalTelemetryMessageTime.data[1];
-data[CanIdSize + 2] = InternalTelemetryMessageTime.data[2];
+memcpy(data + CanIdSize, &InternalTelemetryMessageTime.data, CanTimeSize);
 
 //Adds the Can data
 switch (type){
     case NothingToSend:
-        data[CanIdSize + CanTimeSize  + 0] = NothingToSendData[0];
-        data[CanIdSize + CanTimeSize  + 1] = NothingToSendData[1];
-        data[CanIdSize + CanTimeSize  + 2] = NothingToSendData[2];
-        data[CanIdSize + CanTimeSize  + 3] = NothingToSendData[3];
-        data[CanIdSize + CanTimeSize  + 4] = NothingToSendData[4];
-        data[CanIdSize + CanTimeSize  + 5] = NothingToSendData[5];
-        data[CanIdSize + CanTimeSize  + 6] = NothingToSendData[6];
-        data[CanIdSize + CanTimeSize  + 7] = NothingToSendData[7];
+        memcpy(data + CanIdSize + CanTimeSize, &NothingToSendData, CanDataSize);
         break;
 
     case ResendPackage:
-        data[CanIdSize + CanTimeSize  + 0] = ResendPackageData[0];
-        data[CanIdSize + CanTimeSize  + 1] = ResendPackageData[1];
-        data[CanIdSize + CanTimeSize  + 2] = ResendPackageData[2];
-        data[CanIdSize + CanTimeSize  + 3] = ResendPackageData[3];
-        data[CanIdSize + CanTimeSize  + 4] = ResendPackageData[4];
-        data[CanIdSize + CanTimeSize  + 5] = ResendPackageData[5];
-        data[CanIdSize + CanTimeSize  + 6] = ResendPackageData[6];
-        data[CanIdSize + CanTimeSize  + 7] = ResendPackageData[7];
+        memcpy(data + CanIdSize + CanTimeSize, &ResendPackageData, CanDataSize);
         break;
 
     default:
@@ -57,6 +40,9 @@ void RadioPackage::send(void){
     LoRa.write(NumberOfBytes);
     LoRa.write(data, NumberOfBytes);
     LoRa.endPacket();
+    logger.iterateUplinkMessageCount();
+    LoopFromLastBroadcast = 0;
+    ReadyToSend = false;
 }
 
 
@@ -68,6 +54,8 @@ void RadioPackage::receive(void){
 
     logger.logRSSI(rssi);                  //logge funksjon -jens
     logger.logSNR(snr);                    //logge funksjon -jens
+    logger.iterateDownlinkMessageCount();
+    ReadyToSend = true;
 }
 
 
