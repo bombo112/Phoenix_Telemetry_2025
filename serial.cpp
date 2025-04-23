@@ -21,7 +21,7 @@ void processSerialMessageRx(void* param)//må skru av interupts
         }
         else
         {
-            std::vector<std::string> sentenceParts = split(inputStringSerial, ':');
+            std::vector<std::string> sentenceParts = split(inputStringSerial, ',');
             if (sentenceParts.size() > 9){
                 inputStringSerial.clear();
                 continue;
@@ -34,7 +34,7 @@ void processSerialMessageRx(void* param)//må skru av interupts
 
             serialRxfifo.push(frame);
             inputStringSerial.clear();
-            frame.print(); //debug
+            //frame.print(); //debug
             continue;
         }
     }

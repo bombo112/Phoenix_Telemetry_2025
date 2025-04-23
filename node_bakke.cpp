@@ -4,7 +4,7 @@
 int GroundLoop()
 {
     serialInit();
-    
+    printf("BOOTUP!\n");
     ReadyToSend = true;
     ResendLastRadioPackage = false;
     LoopFromLastBroadcast = 0;

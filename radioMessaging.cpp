@@ -107,7 +107,8 @@ canFrame RadioPackage::MessageToCan(int CanNumber){
 void RadioPackage::IdsToPerformAction(canFrame CanMessage){
     pico_unique_board_id_t currentBoard;
     pico_get_unique_board_id(&currentBoard);
-    
+    printf("ACTION!\n");
+    CanMessage.print();
     switch (CanMessage.id){
     case InternalTelemetryMessageId:
         if(CanMessage.CompareCanFrameDataToArray(NothingToSendData)){break;}
@@ -122,7 +123,7 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
 
     case BootSelectRocketModuleId:
         if (memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){rom_reset_usb_boot(0,0);}
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectRocketModuleData)){/*rom_reset_usb_boot(0,0);*/}     //unsafe for flight
         }
         break;
 
@@ -134,7 +135,7 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
 
     case BootSelectGroundModuleId:
         if (memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0){
-            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){rom_reset_usb_boot(0,0);}
+            if(CanMessage.CompareCanFrameDataToArray(BootSelectGroundModuleData)){/*rom_reset_usb_boot(0,0);*/}     //unsafe for flight
         }
         break;
 

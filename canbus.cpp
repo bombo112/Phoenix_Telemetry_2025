@@ -103,13 +103,13 @@ bool IDisOfInterest(const canFrame incoming)
 }
 
 
-bool processCanbusMessageRx()
+bool processCanbusMessageRx(bool printIncoming = false)
 {
     struct can_frame canrx;
     MCP2515::ERROR error = canbus.readMessage(&canrx);
     if (error != MCP2515::ERROR_OK)                             {return false;}
     canFrame canRx(canrx);
-    canRx.print();  //debug
+    if (printIncoming)                                          {canRx.print();}    //debug
 
     if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
