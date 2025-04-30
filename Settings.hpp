@@ -26,7 +26,7 @@ static constexpr uint8_t Pin_Can_RESET      = 10;
 static constexpr uint8_t Pin_Can_STBY       =  4;
 
 
-static constexpr uint64_t RadioFrekvens   = 411E6;
+static constexpr uint64_t RadioFrekvens   = 433E6;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
 constexpr uint32_t idsToSendToGround[] = {200, 201, 202, 203, 204, 300, 301, 302, 303};
@@ -36,6 +36,7 @@ constexpr size_t MaxBufferSize = 2000;
 
 static constexpr pico_unique_board_id_t RocketNodeId = {.id {0xD0,0x61,0x5D,0xC9,0x28,0xCC,0x1D,0x14}}; //D0615DC928CC1D14
 static constexpr pico_unique_board_id_t GroundNodeId = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
+static constexpr pico_unique_board_id_t testId       = {.id {0x06,0xd7,0xea,0x02,0xbe,0xcb,0x5b,0x99}}; //06d7ea02becb5b99
 
 const uint16_t ResetRocketModuleId          = 304;
 const uint16_t ResetGroundModuleId          = 324;

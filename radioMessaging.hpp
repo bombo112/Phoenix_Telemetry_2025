@@ -30,7 +30,7 @@ static constexpr uint8_t MaxNumberOfCanFrame = MaxNumberOfBytesForData/CanFrameS
 class RadioPackage {
     private:
         int rssi;
-        float snr;
+        int8_t snr;
 
     public:
         uint8_t data[MaxNumberOfBytesForData];

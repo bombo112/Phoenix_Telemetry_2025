@@ -277,7 +277,7 @@ int LoRaClass::packetRssi()
   return (readRegister(REG_PKT_RSSI_VALUE) - (_frequency < RF_MID_BAND_THRESHOLD ? RSSI_OFFSET_LF_PORT : RSSI_OFFSET_HF_PORT));
 }
 
-float LoRaClass::packetSnr() 
+int8_t LoRaClass::packetSnr() 
 {
   return ((int8_t)readRegister(REG_PKT_SNR_VALUE)) * 0.25;
 }
