@@ -13,7 +13,7 @@ void RocketLoop()
     watchdog_update();
     while(true)
     {
-        processCanbusMessageRx(true);
+        processCanbusMessageRx(false);
         processCanbusMessageTx();
 
         if(ReadyToSend)                     {CanRxFifoToSend();}
