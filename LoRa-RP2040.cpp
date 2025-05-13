@@ -143,8 +143,8 @@ int LoRaClass::begin(long frequency)
 
 
   setSpreadingFactor(7);
-  setCodingRate4(5);
-  setSignalBandwidth(125E3);
+  setCodingRate4(6);
+  setSignalBandwidth(500E3);
 
 
 
