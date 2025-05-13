@@ -2,7 +2,7 @@ import serial
 import time
 
 # Set your serial port and baud rate
-SERIAL_PORT = '/dev/tty.usbmodem1101'  # Replace with your actual port
+SERIAL_PORT = '/dev/tty.usbmodem101'  # Replace with your actual port
 BAUD_RATE = 115200
 OUTPUT_FILE = 'serial_log.txt'
 
