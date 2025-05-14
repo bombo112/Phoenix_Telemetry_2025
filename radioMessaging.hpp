@@ -42,8 +42,8 @@ class RadioPackage {
         void send(void);
         void receive(void);
         void print(void);
-        bool CanToMessage(canFrame can);
-        canFrame MessageToCan(int CanNumber);
+        bool CanToPackage(canFrame can);
+        canFrame PackageToCan(int CanNumber);
         void IdsToPerformAction(canFrame can);
     };
 

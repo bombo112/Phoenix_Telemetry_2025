@@ -13,19 +13,18 @@ printf("Delta tid for CanRxFifoToMessageFifo i us: %d \n",(picoTime2us-picoTime1
 void CanRxFifoToSend(void){
     if(ResendLastRadioPackage)      {LastSentRadioPackage.send();}
     else if(!canRxfifo.empty()){
-        RadioPackage OutgoingRadioMessage;
+        RadioPackage OutgoingRadioPackage;
         for (int i = 0; i < MaxNumberOfCanFrame && canRxfifo.size()>0; i++){
-            OutgoingRadioMessage.CanToMessage(retrieveFrameFromCan());
+            OutgoingRadioPackage.CanToPackage(retrieveFrameFromCan());
         }
-        OutgoingRadioMessage.send();
-        LastSentRadioPackage = OutgoingRadioMessage;
+        OutgoingRadioPackage.send();
+        LastSentRadioPackage = OutgoingRadioPackage;
     }
     else{
-        RadioPackage OutgoingRadioMessage(NothingToSend);
-        OutgoingRadioMessage.send();
-        LastSentRadioPackage = OutgoingRadioMessage;
+        RadioPackage OutgoingRadioPackage(NothingToSend);
+        OutgoingRadioPackage.send();
+        LastSentRadioPackage = OutgoingRadioPackage;
     }
-    ResendLastRadioPackage = false;
 }
 
 
@@ -34,7 +33,7 @@ void SerialRxFifoToSend(void){
     else if(!serialRxfifo.empty()){
         RadioPackage OutgoingRadioMessage;
         for (int i = 0; i < MaxNumberOfCanFrame && serialRxfifo.size()>0; i++){
-            OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
+            OutgoingRadioMessage.CanToPackage(retrieveFrameFromSerial());
         }
         OutgoingRadioMessage.send();
         LastSentRadioPackage = OutgoingRadioMessage;
@@ -44,7 +43,6 @@ void SerialRxFifoToSend(void){
         OutgoingRadioMessage.send();
         LastSentRadioPackage = OutgoingRadioMessage;
     }
-    ResendLastRadioPackage = false;
 }
 
 
@@ -61,14 +59,14 @@ void ReceiveToSerialTxFifo(void){
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
     if(WasThePackageSentTwice(ReceiveRadioMessage)){return;}
-    ReceiveRadioMessage.print(); //debug
+    //ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
-        canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
+        canFrame CanMessages = ReceiveRadioMessage.PackageToCan(i);
         //CanMessages.print();//debug
         sendFrameToSerial(CanMessages);
     }
-    LastReceivedRadioPackage = ReceiveRadioMessage;
+    if(!ResendLastRadioPackage){LastReceivedRadioPackage = ReceiveRadioMessage;}
     return;
 }
 
@@ -78,10 +76,10 @@ void ReceiveToCanTxFifo(void){
     RadioPackage ReceiveRadioMessage;
     ReceiveRadioMessage.receive();
     if(WasThePackageSentTwice(ReceiveRadioMessage)){return;}
-    ReceiveRadioMessage.print(); //debug
+    //ReceiveRadioMessage.print(); //debug
     int NumberOfCan = ReceiveRadioMessage.NumberOfBytes / CanFrameSize;
     for (int i = 0; i < NumberOfCan; i++){ 
-        canFrame CanMessages = ReceiveRadioMessage.MessageToCan(i);
+        canFrame CanMessages = ReceiveRadioMessage.PackageToCan(i);
         //CanMessages.print();//debug
         sendFrameToCan(CanMessages);
     }

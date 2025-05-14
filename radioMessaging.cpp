@@ -43,6 +43,7 @@ void RadioPackage::send(void){
     logger.iterateUplinkMessageCount();
     LoopFromLastBroadcast = 0;
     ReadyToSend = false;
+    ResendLastRadioPackage = false;
 }
 
 
@@ -71,7 +72,7 @@ void RadioPackage::print(void){          //debug print
 }
 
 
-bool RadioPackage::CanToMessage(canFrame can){
+bool RadioPackage::CanToPackage(canFrame can){
     memcpy(data +NumberOfBytes, &can.id, CanIdSize);
     memcpy(data +NumberOfBytes + CanIdSize, &can.time, CanTimeSize);
     memcpy(data +NumberOfBytes + CanIdSize + CanTimeSize, &can.data, CanDataSize);
@@ -82,7 +83,7 @@ bool RadioPackage::CanToMessage(canFrame can){
 }
 
 
-canFrame RadioPackage::MessageToCan(int CanNumber){
+canFrame RadioPackage::PackageToCan(int CanNumber){
     canFrame can;
     memcpy(&can.id, data + (CanNumber*CanFrameSize), CanIdSize);
     memcpy(&can.time, data + (CanNumber*CanFrameSize) + CanIdSize, CanTimeSize);
