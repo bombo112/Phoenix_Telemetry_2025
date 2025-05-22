@@ -9,7 +9,7 @@
 #include "LoRa-RP2040.h"
 #include "node_bakke.hpp"
 #include "node_rakett.hpp"
-#include "radioMessaging.hpp"
+#include "RadioPackage.hpp"
 #include "pico/unique_id.h"
 #include "logging.hpp"
 #include "canbus.hpp"

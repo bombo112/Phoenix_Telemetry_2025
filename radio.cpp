@@ -1,15 +1,5 @@
 #include "radio.hpp"
 
-
-/*
-absolute_time_t picoTime1 = get_absolute_time();
-absolute_time_t picoTime2 = get_absolute_time();
-int picoTime1us = to_us_since_boot(picoTime1);
-int picoTime2us = to_us_since_boot(picoTime2);
-printf("Delta tid for CanRxFifoToMessageFifo i us: %d \n",(picoTime2us-picoTime1us));
-*/
-
-
 void CanRxFifoToSend(void){
     if(ResendLastRadioPackage)      {LastSentRadioPackage.send();}
     else if(!canRxfifo.empty()){

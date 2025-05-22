@@ -7,17 +7,17 @@
 #include "pico/bootrom_constants.h"
 
 
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef RadioPackage_H
+#define RADIOPACKAGE_H
 
 inline bool ReadyToSend;
 inline bool ResendLastRadioPackage;
 inline int LoopFromLastBroadcast;
 
-inline canFrame CanSizeMessurment;
-
 const uint8_t NothingToSend = 0;
 const uint8_t ResendPackage = 1;
+
+inline canFrame CanSizeMessurment;
 
 static constexpr uint8_t CanIdSize = sizeof(CanSizeMessurment.id);
 static constexpr uint8_t CanTimeSize = sizeof(CanSizeMessurment.time);
@@ -42,7 +42,7 @@ class RadioPackage {
         void send(void);
         void receive(void);
         void print(void);
-        bool CanToPackage(canFrame can);
+        void CanToPackage(canFrame can);
         canFrame PackageToCan(int CanNumber);
         void IdsToPerformAction(canFrame can);
     };

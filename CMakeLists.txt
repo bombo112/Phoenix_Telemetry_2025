@@ -46,7 +46,7 @@ add_executable( Phoenix_Telemetry_2025
                 node_bakke.cpp
                 logging.cpp
                 canbus.cpp
-                radioMessaging.cpp
+                RadioPackage.cpp
                 radio.cpp
                 serial.cpp)
 

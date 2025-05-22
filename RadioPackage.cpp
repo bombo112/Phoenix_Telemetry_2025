@@ -1,4 +1,4 @@
-#include "radioMessaging.hpp"
+#include "RadioPackage.hpp"
 
 
 RadioPackage::RadioPackage(){NumberOfBytes = 0;}
@@ -72,14 +72,12 @@ void RadioPackage::print(void){          //debug print
 }
 
 
-bool RadioPackage::CanToPackage(canFrame can){
+void RadioPackage::CanToPackage(canFrame can){
     memcpy(data +NumberOfBytes, &can.id, CanIdSize);
     memcpy(data +NumberOfBytes + CanIdSize, &can.time, CanTimeSize);
     memcpy(data +NumberOfBytes + CanIdSize + CanTimeSize, &can.data, CanDataSize);
     NumberOfBytes += CanFrameSize;
     IdsToPerformAction(can);
-    if(NumberOfBytes>=(MaxNumberOfBytesForData - CanFrameSize))  {return 1;}
-    return 0;
 }
 
 
