@@ -68,8 +68,8 @@
 #endif
 
 LoRaClass::LoRaClass() : 
-      _spi(SPI_PORT),
-      _ss(LORA_DEFAULT_SS_PIN), _reset(LORA_DEFAULT_RESET_PIN), _dio0(LORA_DEFAULT_DIO0_PIN), 
+      _spi(SPI_Radio_Port),
+      _ss(Pin_Radio_CS), _reset(Pin_Radio_RESET), _dio0(Pin_Radio_DIO0), 
       _frequency(0), 
       _packetIndex(0),
       _implicitHeaderMode(0), 
@@ -100,21 +100,21 @@ int LoRaClass::begin(long frequency)
 
 
   // start SPI
-  spi_init(SPI_PORT, 1000000);//12500
-  gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
-  gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);
-  gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
+  spi_init(SPI_Radio_Port, SPI_Radio_FREQUENCY);//12500
+  gpio_set_function(Pin_Radio_MISO, GPIO_FUNC_SPI);
+  gpio_set_function(Pin_Radio_SCK, GPIO_FUNC_SPI);
+  gpio_set_function(Pin_Radio_MOSI, GPIO_FUNC_SPI);
 
 
   // Make the SPI pins available to picotool
-  bi_decl(bi_3pins_with_func(PIN_MISO, PIN_MOSI, PIN_SCK, GPIO_FUNC_SPI));
+  bi_decl(bi_3pins_with_func(Pin_Radio_MISO, Pin_Radio_MOSI, Pin_Radio_SCK, GPIO_FUNC_SPI));
 
-  gpio_init(PIN_CS);
-  gpio_set_dir(PIN_CS, GPIO_OUT);
-  gpio_put(PIN_CS, 1);
+  gpio_init(Pin_Radio_CS);
+  gpio_set_dir(Pin_Radio_CS, GPIO_OUT);
+  gpio_put(Pin_Radio_CS, 1);
 
   // Make the CS pin available to picotool
-  bi_decl(bi_1pin_with_name(PIN_CS, "SPI CS"));
+  bi_decl(bi_1pin_with_name(Pin_Radio_CS, "SPI CS"));
 
   // check version
   uint8_t version = readRegister(REG_VERSION);
@@ -158,7 +158,7 @@ void LoRaClass::end()
   sleep();
 
   // stop SPI
-  spi_deinit(SPI_PORT);
+  spi_deinit(SPI_Radio_Port);
 }
 
 int LoRaClass::beginPacket(int implicitHeader) 
@@ -672,7 +672,7 @@ void LoRaClass::setSPI(spi_inst_t& spi)
 
 void LoRaClass::setSPIFrequency(uint32_t frequency)
 {
-  spi_set_baudrate(SPI_PORT, frequency);
+  spi_set_baudrate(SPI_Radio_Port, frequency);
 }
 
 void LoRaClass::dumpRegisters() 
@@ -747,8 +747,8 @@ uint8_t LoRaClass::singleTransfer(uint8_t address, uint8_t value)
 
   gpio_put(_ss, 0);
 
-  spi_write_blocking(SPI_PORT, &address, 1);
-  spi_write_read_blocking(SPI_PORT, &value, &response, 1);
+  spi_write_blocking(SPI_Radio_Port, &address, 1);
+  spi_write_read_blocking(SPI_Radio_Port, &value, &response, 1);
 
   gpio_put(_ss, 1);
 

@@ -10,21 +10,22 @@
 #include "Print.h"
 #include "Settings.hpp"
 
+/*
 #define PIN_MISO 16
 #define PIN_CS   8
 #define PIN_SCK  18
 #define PIN_MOSI 19
 
 #define SPI_PORT spi0
-#define READ_BIT 0x80
 
 #define LORA_DEFAULT_SPI           spi0
 #define LORA_DEFAULT_SPI_FREQUENCY 8E6
 #define LORA_DEFAULT_SS_PIN        8
 #define LORA_DEFAULT_RESET_PIN     9
 #define LORA_DEFAULT_DIO0_PIN      7
+*/
 
-
+#define READ_BIT 0x80
 #define PA_OUTPUT_RFO_PIN          0
 #define PA_OUTPUT_PA_BOOST_PIN     1
 
@@ -92,7 +93,7 @@ public:
 
   uint8_t random();
 
-  void setPins(int ss = LORA_DEFAULT_SS_PIN, int reset = LORA_DEFAULT_RESET_PIN, int dio0 = LORA_DEFAULT_DIO0_PIN);
+  void setPins(int ss = Pin_Radio_CS, int reset = Pin_Radio_RESET, int dio0 = Pin_Radio_DIO0);
   void setSPI(spi_inst_t &spi);
   void setSPIFrequency(uint32_t frequency);
 

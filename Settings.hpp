@@ -5,6 +5,10 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+//Radio Spi
+#define SPI_Radio_Port spi0
+#define SPI_Radio_FREQUENCY 8E6
+
 //Radio pinner
 static constexpr uint8_t Pin_Radio_CS       = 17;
 static constexpr uint8_t Pin_Radio_SCK      = 18;
