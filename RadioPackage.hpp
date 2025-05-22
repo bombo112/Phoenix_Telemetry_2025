@@ -7,7 +7,7 @@
 #include "pico/bootrom_constants.h"
 
 
-#ifndef RadioPackage_H
+#ifndef RADIOPACKAGE_H
 #define RADIOPACKAGE_H
 
 inline bool ReadyToSend;

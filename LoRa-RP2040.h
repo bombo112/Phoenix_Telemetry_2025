@@ -8,6 +8,7 @@
 #include "hardware/spi.h"
 #include "string.h"
 #include "Print.h"
+#include "Settings.hpp"
 
 #define PIN_MISO 16
 #define PIN_CS   8

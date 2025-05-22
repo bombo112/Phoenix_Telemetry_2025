@@ -27,6 +27,9 @@ static constexpr uint8_t Pin_Can_STBY       =  4;
 
 
 static constexpr uint64_t RadioFrekvens   = 421E6;
+static constexpr uint64_t RadioSignalBandwidth   = 500E3;
+static constexpr uint64_t RadioSpreadingFactor   = 7;
+static constexpr uint64_t RadioCodingRateDenominator   = 5;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
 constexpr uint32_t idsToSendToGround[] = {177, 200, 201, 202, 203, 204, 300, 301, 302, 303, 177};
