@@ -19,7 +19,7 @@ void GroundLoop()
 
         if(LoopFromLastBroadcast>10000)     {SendResendPackageCommand();}
 
-        if(timeToLogGroundModule())         {logger.reportGround();}
+        //if(timeToLogGroundModule())         {logger.reportGround();}
 
         LoopFromLastBroadcast++;
 

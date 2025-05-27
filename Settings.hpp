@@ -36,7 +36,7 @@ static constexpr uint64_t RadioSpreadingFactor   = 7;
 static constexpr uint64_t RadioCodingRateDenominator   = 5;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
-constexpr uint32_t idsToSendToGround[] = {177, 200, 201, 202, 203, 204, 300, 301, 302, 303, 177};
+constexpr uint32_t idsToSendToGround[] = {177, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 324, 399};
 static constexpr uint32_t utcSynchFrameId = 201;
 
 constexpr size_t MaxBufferSize = 2000;
