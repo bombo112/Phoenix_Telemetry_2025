@@ -146,6 +146,7 @@ bool processCanbusMessageTx()
 
 void sendFrameToCan(canFrame frameToBeSent)
 {
+    if(frameToBeSent.id == InternalTelemetryMessageId){return;}
     if (canTxfifo.size() >= MaxBufferSize) 
     {
         canTxfifo.pop();

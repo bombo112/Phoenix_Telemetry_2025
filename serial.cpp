@@ -97,6 +97,7 @@ std::vector<std::string> split(const std::string &s, const char delimiter)
 
 void sendFrameToSerial(canFrame frameToBeSent)
 {
+    if(frameToBeSent.id == InternalTelemetryMessageId){return;}
     if (serialTxfifo.size() >= MaxBufferSize) 
     {
         serialTxfifo.pop();

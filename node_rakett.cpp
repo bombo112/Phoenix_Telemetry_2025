@@ -14,7 +14,7 @@ void RocketLoop()
     while(true)
     {
         processCanbusMessageRx(true);
-        //processCanbusMessageTx();
+        processCanbusMessageTx();
 
         if(ReadyToSend)                     {CanRxFifoToSend();}
         else if(!gpio_get(Pin_Radio_DIO0))  {ReceiveToCanTxFifo();}
