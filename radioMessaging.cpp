@@ -106,6 +106,7 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
         if ((memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetRocketModuleKey))
         {
             rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
+            sleep_ms(200);
         }
         break;
 
@@ -113,6 +114,7 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
         if ((memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetGroundModuleKey))
         {
             rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
+            sleep_ms(200);
         }
         break;
 

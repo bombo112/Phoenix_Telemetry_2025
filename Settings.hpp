@@ -42,8 +42,8 @@ const uint16_t ResetRocketModuleId          = 304;
 const uint16_t ResetGroundModuleId          = 324;
 const uint16_t InternalTelemetryMessageId   = 399;
 
-static uint8_t ResetRocketModuleKey[8]  = {1,2,3,4,5,6,7,8};
-static uint8_t ResetGroundModuleKey[8]  = {1,2,3,4,5,6,7,8};
+static uint8_t ResetRocketModuleKey[8]  = {0,0,0,0,0,0,0,1};
+static uint8_t ResetGroundModuleKey[8]  = {0,0,0,0,0,0,0,2};
 static uint8_t NothingToSendData[8]     = {1,1,1,1,1,1,1,1};
 static uint8_t ResendPackageData[8]     = {2,2,2,2,2,2,2,2};
 
