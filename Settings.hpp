@@ -29,7 +29,13 @@ static constexpr uint8_t Pin_Can_STBY       =  4;
 static constexpr uint64_t RadioFrekvens   = 421E6;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
-constexpr uint32_t idsToSendToGround[] = {177, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 324, 399};
+constexpr uint32_t idsToSendToGround[] = {
+    2,3,
+    100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+    200, 201, 202, 203, 204, 206, 
+    300, 301, 302, 303, 399,
+    400
+};
 static constexpr uint32_t utcSynchFrameId = 201;
 
 constexpr size_t MaxBufferSize = 2000;
