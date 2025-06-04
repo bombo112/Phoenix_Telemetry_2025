@@ -279,7 +279,7 @@ int LoRaClass::packetRssi()
 
 int8_t LoRaClass::packetSnr() 
 {
-  return ((int8_t)readRegister(REG_PKT_SNR_VALUE));// * 0.25;
+  return ((int8_t)readRegister(REG_PKT_SNR_VALUE))/4;// * 0.25;
 }
 
 long LoRaClass::packetFrequencyError() 
