@@ -182,8 +182,8 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 
 void syncTime(canFrame gpsTimeFrame)
 {   
-    float utc = 0;
-    memcpy(&utc, &gpsTimeFrame.data[4], sizeof(utc));
+    float utc = 4;
+    memcpy(&utc, &gpsTimeFrame.data[0], sizeof(utc));
 
     int32_t hhmmss = static_cast<int>(utc); 
 

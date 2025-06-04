@@ -53,7 +53,7 @@ public:
 
 inline std::queue<canFrame> canRxfifo;
 inline std::queue<canFrame> canTxfifo;
-inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 1000000);
+inline MCP2515 canbus(spi1, Pin_Can_Cs, Pin_Can_MOSI, Pin_Can_MISO, Pin_Can_SCK, 10000000);
 
 bool processCanbusMessageRx(bool printIncoming);
 bool processCanbusMessageTx();

@@ -79,6 +79,30 @@ void Logger::report(bool nodeIsRocket)
     loopbackCanFrame(signalQuality);
     loopbackCanFrame(messageCounters);
     loopbackCanFrame(buffers);
+
+            constexpr uint64_t UsHour = 3600000000;
+            constexpr uint64_t UsMinute = 60000000;
+            constexpr uint64_t UsSecond  = 1000000; 
+            uint64_t UsTime = parseTimeStamp(getTimeStamp());
+
+            uint64_t hours   = UsTime / UsHour;
+            UsTime %= UsHour;
+
+            uint64_t minutes = UsTime / UsMinute;
+            UsTime %= UsMinute;
+
+            uint64_t seconds = UsTime / UsSecond;
+            uint64_t micro   = UsTime % UsSecond;
+
+            char buffer[32];
+            snprintf(buffer, 32, "%02llu:%02llu:%02llu.%06llu", hours, minutes, seconds, micro);
+
+            status.print();
+            signalQuality.print();
+            messageCounters.print();
+            buffers.print();
+            printf("CANRX: %d, CANTX: %d, Time: %s, Downlink: %d, Uplink: %d, SNR: %d, RSSI: %d", bufferMeasurements[CANRX], bufferMeasurements[CANTX], buffer, downlinkMessageCount, uplinkMessageCount, SNR, RSSI);
+            printf("\n\n");
     }
     else
     {
@@ -89,5 +113,9 @@ void Logger::report(bool nodeIsRocket)
     }
     SNR = 0;
     RSSI = 0;
+
+    
+ 
+    
 }
 
