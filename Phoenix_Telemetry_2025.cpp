@@ -29,7 +29,7 @@ int main()
   stdio_init_all();
   initLoRa();
 
-  if (watchdog_caused_reboot()) {printf("WARNING: WATCHDOG REBOOTED");}
+  if (watchdog_caused_reboot()) {printf("\n\n\nWARNING: WATCHDOG REBOOTED\n\n\n");}
 
   watchdog_enable(1000, false);
   

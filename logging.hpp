@@ -35,8 +35,8 @@ private:
         STATUS_COUNT
     } Indicators;
 
-    int RSSI;                         // Recieved Signal Strength Indicator
-    int SNR;                          // Signal to Noies Ratio
+    int32_t RSSI;                         // Recieved Signal Strength Indicator
+    int32_t SNR;                          // Signal to Noies Ratio
     uint16_t bufferMeasurements[BUFFER_COUNT];
     bool statusBits[STATUS_COUNT];
     uint16_t lostPackages;
@@ -47,8 +47,8 @@ public:
     uint32_t downlinkMessageCount;
     uint32_t lostMessageCount;
 
-    inline void logSNR(int newReading)            {SNR  = std::max(newReading,  SNR);}
-    inline void logRSSI(int newReading)           {RSSI = std::min(newReading, RSSI);}
+    inline void logSNR(int32_t newReading)            {SNR  = std::max(newReading,  SNR);}
+    inline void logRSSI(int32_t newReading)           {RSSI = std::min(newReading, RSSI);}
     inline void iterateUplinkMessageCount(void)     {uplinkMessageCount++;}
     inline void iterateDownlinkMessageCount(void)   {downlinkMessageCount++;}
     inline void iterateLostMessageCount(void)       {lostMessageCount++;}

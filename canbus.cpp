@@ -111,8 +111,8 @@ bool processCanbusMessageRx(bool printIncoming)
     canFrame canRx(canrx);
     if (printIncoming)                                          {canRx.print();}    //debug
 
+    if (canRx.id == utcSynchFrameId)                            {syncTime(canRx);canRx.print();}
     if (!IDisOfInterest(canRx))                                 {return false;}
-    if (canRx.id == utcSynchFrameId)                            {syncTime(canRx);}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRx.time = getTimeStamp();
     canRxfifo.push(canRx);
@@ -130,6 +130,11 @@ bool processCanbusMessageTx()
     canFrame frame = canTxfifo.front();
     can_frame frame_ = frame.convert();
     MCP2515::ERROR error = canbus.sendMessage(&frame_);
+    if (frame.id == 1) {    //debug for å sjekke command kom igjennom uten feil -jens
+        printf("\n");
+        printf("COMMAND: ");
+        frame.print();
+        printf("\n");}
 
     while (error == MCP2515::ERROR_ALLTXBUSY)
     {
@@ -182,18 +187,22 @@ void loopbackCanFrame(canFrame &frameToBeSent)
 
 void syncTime(canFrame gpsTimeFrame)
 {   
-    float utc = 4;
+    float utc;
     memcpy(&utc, &gpsTimeFrame.data[0], sizeof(utc));
 
     int32_t hhmmss = static_cast<int>(utc); 
 
-    int32_t hours   = hhmmss / 10000;
-    int32_t minutes = (hhmmss / 100) % 100;
-    int32_t seconds = hhmmss % 100;
+    int32_t hours = hhmmss / 10000;
+    int32_t minutes  = (hhmmss % 10000) / 100;
+    int32_t seconds  = hhmmss % 100;
+
     float frac = utc - hhmmss;
 
     //parse gps time can frame to micro seconds of the day
-    uint64_t gpsTime = (hours*60*60*1000000) + (minutes*60*1000000) + (seconds*1000000) + (frac*1000000);
+    uint64_t gpsTime =    (uint64_t)hours   * 3600ULL * 1000000ULL
+                        + (uint64_t)minutes *   60ULL * 1000000ULL
+                        + (uint64_t)seconds *      1000000ULL
+                        + (uint64_t)(frac * 1000000.0f);
     uint64_t picoTime = to_us_since_boot(get_absolute_time());
 
     utcPicoDeltaTime = absolute_time_diff_us(picoTime, gpsTime);
