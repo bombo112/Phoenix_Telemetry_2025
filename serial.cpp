@@ -32,6 +32,7 @@ void processSerialMessageRx(void* param)//må skru av interupts
             for (size_t i = 1; i < sentenceParts.size(); i++)   {frame.data[i-1] = stoi(sentenceParts[i], 0, 16);}
             if (serialRxfifo.size() >= MaxBufferSize) {serialRxfifo.pop();}
 
+            CheckIfResetGroundModule(frame);
             serialRxfifo.push(frame);
             inputStringSerial.clear();
             //frame.print(); //debug
@@ -118,5 +119,15 @@ canFrame retrieveFrameFromSerial()
     else
     {
         return frameToBeRecieved;
+    }
+}
+
+void CheckIfResetGroundModule(canFrame FrameToCheck){
+    if(FrameToCheck.id != ResetGroundModuleId)          {return;}
+    pico_unique_board_id_t currentBoard;
+    pico_get_unique_board_id(&currentBoard);
+    if ((memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && FrameToCheck.CompareCanFrameDataToArray(ResetGroundModuleKey)){
+        rom_reboot(BOOT_TYPE_NORMAL, 10,0,0);
+        sleep_ms(20);
     }
 }

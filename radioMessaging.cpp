@@ -76,9 +76,8 @@ bool RadioPackage::CanToMessage(canFrame can){
     memcpy(data +NumberOfBytes + CanIdSize, &can.time, CanTimeSize);
     memcpy(data +NumberOfBytes + CanIdSize + CanTimeSize, &can.data, CanDataSize);
     NumberOfBytes += CanFrameSize;
-    IdsToPerformAction(can);
-    if(NumberOfBytes>=(MaxNumberOfBytesForData - CanFrameSize))  {return 1;}
-    return 0;
+    if(can.id == ResetRocketModuleId)  {return 0;}
+    return 1;
 }
 
 
@@ -105,16 +104,8 @@ void RadioPackage::IdsToPerformAction(canFrame CanMessage){
     case ResetRocketModuleId:
         if ((memcmp(currentBoard.id, RocketNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetRocketModuleKey))
         {
-            rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
-            sleep_ms(200);
-        }
-        break;
-
-    case ResetGroundModuleId:
-        if ((memcmp(currentBoard.id, GroundNodeId.id, PICO_UNIQUE_BOARD_ID_SIZE_BYTES) == 0) && CanMessage.CompareCanFrameDataToArray(ResetGroundModuleKey))
-        {
-            rom_reboot(BOOT_TYPE_NORMAL, 100,0,0);
-            sleep_ms(200);
+            rom_reboot(BOOT_TYPE_NORMAL, 10,0,0);
+            sleep_ms(20);
         }
         break;
 

@@ -32,12 +32,13 @@ void CanRxFifoToSend(void){
 void SerialRxFifoToSend(void){
     if(ResendLastRadioPackage)      {LastSentRadioPackage.send();}
     else if(!serialRxfifo.empty()){
+        bool SavePackage = 0;
         RadioPackage OutgoingRadioMessage;
         for (int i = 0; i < MaxNumberOfCanFrame && serialRxfifo.size()>0; i++){
-            OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
+            SavePackage = OutgoingRadioMessage.CanToMessage(retrieveFrameFromSerial());
         }
         OutgoingRadioMessage.send();
-        LastSentRadioPackage = OutgoingRadioMessage;
+        if(SavePackage){LastSentRadioPackage = OutgoingRadioMessage;}
     }
     else{
         RadioPackage OutgoingRadioMessage(NothingToSend);

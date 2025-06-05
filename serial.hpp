@@ -20,5 +20,6 @@ void serialInit();
 canFrame retrieveFrameFromSerial();
 void sendFrameToSerial(canFrame frameToBeSent);
 
+void CheckIfResetGroundModule(canFrame FrameToCheck);
 
 #endif
