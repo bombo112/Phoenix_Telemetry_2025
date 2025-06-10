@@ -108,10 +108,11 @@ bool processCanbusMessageRx(bool printIncoming)
     struct can_frame canrx;
     MCP2515::ERROR error = canbus.readMessage(&canrx);
     if (error != MCP2515::ERROR_OK)                             {return false;}
+    if (canrx.can_id > 999)                                     {return false;}
     canFrame canRx(canrx);
     if (printIncoming)                                          {canRx.print();}    //debug
 
-    if (canRx.id == utcSynchFrameId)                            {syncTime(canRx);canRx.print();}
+    if (canRx.id == utcSynchFrameId)                            {syncTime(canRx);}
     if (!IDisOfInterest(canRx))                                 {return false;}
     if (canRxfifo.size() >= MaxBufferSize)                      {canRxfifo.pop();}
     canRx.time = getTimeStamp();
@@ -122,26 +123,29 @@ bool processCanbusMessageRx(bool printIncoming)
 
 bool processCanbusMessageTx()
 {
-    const size_t maxRetries = 1000;
+    const size_t maxRetries = 5; //1000
     size_t tries = 0;
 
     if (canTxfifo.empty())                              {return false;}
 
     canFrame frame = canTxfifo.front();
+    //frame.print();
     can_frame frame_ = frame.convert();
     MCP2515::ERROR error = canbus.sendMessage(&frame_);
+    /*
     if (frame.id == 1) {    //debug for å sjekke command kom igjennom uten feil -jens
         printf("\n");
         printf("COMMAND: ");
         frame.print();
         printf("\n");}
+    */
 
     while (error == MCP2515::ERROR_ALLTXBUSY)
     {
         if (tries > maxRetries)                         {break;}
         error = canbus.sendMessage(&frame_);
         tries++;
-        sleep_us(10);
+        sleep_us(100);
     }
     if (error == MCP2515::ERROR_FAILTX)                 {return false;}
     canTxfifo.pop();

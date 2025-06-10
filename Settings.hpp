@@ -30,7 +30,7 @@ static constexpr uint64_t RadioFrekvens   = 421E6;
 static constexpr absolute_time_t loggingInterval = 1E6 * 1;  // 1 s = 1 000 000 us
 
 constexpr uint32_t idsToSendToGround[] = {
-    2,3,
+    2, 3, 4, 5,
     100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
     200, 201, 202, 203, 204, 206, 
     300, 301, 302, 303, 399,
@@ -38,7 +38,7 @@ constexpr uint32_t idsToSendToGround[] = {
 };
 static constexpr uint32_t utcSynchFrameId = 201;
 
-constexpr size_t MaxBufferSize = 2000;
+constexpr size_t MaxBufferSize = 200;
 
 static constexpr pico_unique_board_id_t RocketNodeId    = {.id {0xD0,0x61,0x5D,0xC9,0x28,0xCC,0x1D,0x14}}; //D0615DC928CC1D14
 static constexpr pico_unique_board_id_t GroundNodeId    = {.id {0xDB,0x34,0xBE,0x26,0xFB,0xDC,0x69,0xB9}}; //DB34BE26FBDC69B9
