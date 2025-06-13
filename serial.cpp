@@ -41,6 +41,20 @@ void processSerialMessageRx(void* param)//må skru av interupts
     }
 }
 
+void uartInit()
+{
+    irq_set_enabled(UART0_IRQ, true);
+
+    uart_init(uart0, 115200);
+    uart_set_irqs_enabled(uart0, true, false);
+
+}
+
+void processSerialMessageRx()
+{
+
+}
+
 
 void processSerialMessageTx()
 {
