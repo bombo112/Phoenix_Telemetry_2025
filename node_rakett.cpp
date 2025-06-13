@@ -20,7 +20,7 @@ void RocketLoop()
         else if(!gpio_get(Pin_Radio_DIO0))  {ReceiveToCanTxFifo();}
 
         if (timeToLogRocketModule())        {logger.reportRocket();}
-        watchdog_update();
+        if (LoRa.readRegister(0x42) == 0x12)    {watchdog_update();}
     }
 }
 

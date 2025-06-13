@@ -129,16 +129,8 @@ bool processCanbusMessageTx()
     if (canTxfifo.empty())                              {return false;}
 
     canFrame frame = canTxfifo.front();
-    //frame.print();
     can_frame frame_ = frame.convert();
     MCP2515::ERROR error = canbus.sendMessage(&frame_);
-    /*
-    if (frame.id == 1) {    //debug for å sjekke command kom igjennom uten feil -jens
-        printf("\n");
-        printf("COMMAND: ");
-        frame.print();
-        printf("\n");}
-    */
 
     while (error == MCP2515::ERROR_ALLTXBUSY)
     {
