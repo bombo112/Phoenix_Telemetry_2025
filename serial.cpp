@@ -118,6 +118,7 @@ void sendFrameToSerial(canFrame frameToBeSent)
         serialTxfifo.pop();
     }
     serialTxfifo.push(frameToBeSent);
+    if (frameToBeSent.id == utcSynchFrameId)                            {syncTime(frameToBeSent);}
 }
 
 
